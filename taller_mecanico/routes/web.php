@@ -13,3 +13,7 @@ Route::get('/', function () {
 });
 
 Route::get('/clientes', [ClienteController::class, 'index']);
+
+use App\Http\Controllers\EmpleadoController;
+
+Route::resource('empleados', EmpleadoController::class);
