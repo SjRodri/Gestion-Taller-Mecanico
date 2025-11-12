@@ -13,3 +13,11 @@ Route::get('/', function () {
 });
 
 Route::get('/clientes', [ClienteController::class, 'index']);
+
+Route::get('/registro', function () {
+    return view('registro');
+})->name('registro');
+
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
