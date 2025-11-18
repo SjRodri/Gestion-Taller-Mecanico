@@ -12,10 +12,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/clientes', [ClienteController::class, 'index']);
-Route::get('/clientes/create', [ClienteController::class, 'create']);
-Route::post('/clientes', [ClienteController::class, 'store']);
-
-use App\Http\Controllers\EmpleadoController;
-
-Route::resource('empleados', EmpleadoController::class);
+Route::resource('clientes', ClienteController::class);
