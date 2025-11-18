@@ -13,3 +13,7 @@ Route::get('/', function () {
 });
 
 Route::resource('clientes', ClienteController::class);
+
+use App\Http\Controllers\EmpleadoController;
+
+Route::resource('empleados', EmpleadoController::class);

@@ -7,11 +7,35 @@ use Illuminate\Http\Request;
 
 class EmpleadoController extends Controller
 {
-    // Mostrar lista de empleados
-    public function index()
+    // Mostrar lista de empleados con búsqueda, filtros y paginación
+    public function index(Request $request)
     {
-        $empleados = Empleado::all();
-        return view('empleados.index', compact('empleados'));
+        $busqueda = $request->input('buscar');
+        $rol = $request->input('rol');
+        $activo = $request->input('activo');
+
+        $empleados = Empleado::query()
+
+            ->when($busqueda, function ($q) use ($busqueda) {
+                $q->where('nombre', 'LIKE', "%$busqueda%")
+                  ->orWhere('apellido', 'LIKE', "%$busqueda%")
+                  ->orWhere('dni', 'LIKE', "%$busqueda%")
+                  ->orWhere('rol', 'LIKE', "%$busqueda%")
+                  ->orWhere('correo', 'LIKE', "%$busqueda%");
+            })
+
+            ->when($rol, function ($q) use ($rol) {
+                $q->where('rol', $rol);
+            })
+
+            ->when($activo !== null && $activo !== '', function ($q) use ($activo) {
+                $q->where('activo', $activo);
+            })
+
+            ->paginate(10)
+            ->appends($request->query());
+
+        return view('empleados.index', compact('empleados', 'busqueda', 'rol', 'activo'));
     }
 
     // Mostrar formulario de creación

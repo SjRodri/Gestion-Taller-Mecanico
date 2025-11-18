@@ -75,11 +75,6 @@
             color: #2a2a2a;
             margin-bottom: 20px;
         }
-
-        /* Search bar */
-        .table-controls input {
-            width: 250px;
-        }
     </style>
 </head>
 <body>
@@ -89,12 +84,12 @@
         <div class="profile">
             <div class="avatar">S</div>
             <p style="font-size:14px; margin:5px 0; font-weight:bold;">example</p>
-            <p style="font-size:12px; color:#bbbbbb;">Example@gmail.com</p>
+            <p style="font-size:12px; color:#bbbbbb;">example@gmail.com</p>
         </div>
 
         <div class="title">Navegación Principal</div>
         <a href="#"><i class="fa-solid fa-house me-2"></i> Inicio</a>
-        <a href="/clientes" class="active"><i class="fa-solid fa-user me-2"></i> Clientes</a>
+        <a href="/clientes"><i class="fa-solid fa-user me-2"></i> Clientes</a>
         <a href="#"><i class="fa-solid fa-warehouse me-2"></i> Gestión de Talleres</a>
         <a href="/empleados" class="active"><i class="fa-solid fa-users me-2"></i> Empleados</a>
         <a href="#"><i class="fa-solid fa-chart-pie me-2"></i> Reportes</a>
@@ -105,24 +100,37 @@
     <div class="main-content">
         <div class="page-header">@yield('page-title')</div>
 
-        <!-- Controles de Tabla: Buscador + Filtrar -->
-        <div class="d-flex justify-content-between align-items-center mb-3 table-controls">
-            <div class="d-flex gap-2">
-                <input type="text" class="form-control" placeholder="Buscar orden...">
-                <button class="btn btn-outline-secondary">
-                    <i class="fa-solid fa-filter"></i> Filtrar
-                </button>
-            </div>
+        <!-- Controles: Solo se muestran en INDEX -->
+        @if (request()->routeIs('empleados.index'))
+            <div class="d-flex justify-content-between align-items-center mb-3">
 
-            <div class="d-flex gap-2">
-                <button class="btn btn-outline-dark">
-                    <i class="fa-solid fa-table-list"></i>
-                </button>
-                <button class="btn btn-outline-success" onclick="window.location='{{ route('empleados.create') }}'">
+                <form method="GET" action="{{ route('empleados.index') }}" class="d-flex gap-2">
+
+                    <input type="text" name="buscar" value="{{ request('buscar') }}"
+                        class="form-control" placeholder="Buscar empleado...">
+
+                    <select name="rol" class="form-select">
+                        <option value="">Rol</option>
+                        <option value="Administrador" {{ request('rol') == 'Administrador' ? 'selected' : '' }}>Administrador</option>
+                        <option value="Mecánico" {{ request('rol') == 'Mecánico' ? 'selected' : '' }}>Mecánico</option>
+                        <option value="Recepción" {{ request('rol') == 'Recepción' ? 'selected' : '' }}>Recepción</option>
+                    </select>
+
+                    <select name="activo" class="form-select">
+                        <option value="">Activo</option>
+                        <option value="1" {{ request('activo') === '1' ? 'selected' : '' }}>Sí</option>
+                        <option value="0" {{ request('activo') === '0' ? 'selected' : '' }}>No</option>
+                    </select>
+
+                    <button class="btn btn-outline-secondary"><i class="fa-solid fa-filter"></i></button>
+                </form>
+
+                <button class="btn btn-outline-success"
+                    onclick="window.location='{{ route('empleados.create') }}'">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </div>
-        </div>
+        @endif
 
         @yield('content')
     </div>
