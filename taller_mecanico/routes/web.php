@@ -2,10 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\EmpleadoController;
@@ -15,7 +11,13 @@ Route::get('/', function () {
 });
 
 Route::resource('clientes', ClienteController::class);
+Route::resource('empleados', EmpleadoController::class);
 Route::get('/mapa-talleres', [MapController::class, 'showMap']);
 
+Route::get('/registro', function () {
+    return view('registro');
+})->name('registro');
 
-Route::resource('empleados', EmpleadoController::class);
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
