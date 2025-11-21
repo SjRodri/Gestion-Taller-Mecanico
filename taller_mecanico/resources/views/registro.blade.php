@@ -103,12 +103,9 @@
                 <label for="password" class="form-label">Contraseña</label>
                 <input type="password" class="form-control" id="password" placeholder="********">
             </div>
-            <div class="mb-3 text-end">
-                <a href="#" class="link text-decoration-none">Olvidaste tu Contraseña click aquí</a>
-            </div>
             <div class="d-grid gap-2 mb-3">
-                <button type="submit" class="btn btn-registro">Registro</button>
-                <a href="{{ route('login') }}" class="btn btn-regresar text-center">Regresar</a>
+                <button type="submit" class="btn btn-registro">Ingresar</button>
+                <a href="{{ route('login') }}" class="btn btn-regresar text-center">Iniciar Sesion</a>
             </div>
             <div class="text-center mt-3">
                 <p class="fw-semibold mb-3">o regístrate con:</p>

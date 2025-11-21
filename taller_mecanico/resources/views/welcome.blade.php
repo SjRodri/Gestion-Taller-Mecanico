@@ -161,7 +161,7 @@
         </div>
 
         <div class="logout">
-            <a href="#">🚪 Cerrar Sesión</a>
+            <a href="{{ url('/login') }}">🚪 Cerrar Sesión</a>
         </div>
     </div>
 
@@ -199,7 +199,8 @@
 
             <div class="card">
                 <span class="card-icon">📍</span>
-                <p>Mapa de Sucursales</p>
+                <a href="{{ url('/mapa') }}">Mapa de Sucursales</a>
+
             </div>
         </div>
     </div>

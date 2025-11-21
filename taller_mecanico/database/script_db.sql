@@ -31,8 +31,11 @@ CREATE TABLE talleres (
     ubicacion VARCHAR(255),
     telefono VARCHAR(50),
     email VARCHAR(255),
-    horario VARCHAR(100)
+    horario VARCHAR(100),
+    latitude DECIMAL(10,7), -- Coordenadas geográficas
+    longitude DECIMAL(10,7) -- Coordenadas geográficas
 );
+
 
 ALTER TABLE empleados
 ADD CONSTRAINT fk_empleado_taller FOREIGN KEY (taller_id) REFERENCES talleres(taller_id) ON DELETE SET NULL;

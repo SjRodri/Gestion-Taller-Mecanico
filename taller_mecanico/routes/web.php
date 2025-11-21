@@ -12,7 +12,13 @@ Route::get('/', function () {
 
 Route::resource('clientes', ClienteController::class);
 Route::resource('empleados', EmpleadoController::class);
-Route::get('/mapa-talleres', [MapController::class, 'showMap']);
+Route::get('/mapa', [MapController::class, 'index'])->name('mapa.index');
+Route::get('/api/talleres', function () {
+    return \App\Models\Taller::all();
+});
+Route::get('/mapa', [MapController::class, 'index']);
+Route::get('/api/talleres', [MapController::class, 'talleresJson']);
+
 
 Route::get('/registro', function () {
     return view('registro');

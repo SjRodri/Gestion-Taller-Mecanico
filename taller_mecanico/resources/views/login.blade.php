@@ -104,7 +104,7 @@
             </div>
             <div class="d-grid gap-2 mb-3">
                 <button type="submit" class="btn btn-login">Ingresar</button>
-                <a href="{{ route('registro') }}" class="btn btn-regresar text-center">Regresar</a>
+                <a href="{{ route('registro') }}" class="btn btn-regresar text-center">Registrarse</a>
             </div>
             <div class="text-center mt-3">
                 <p class="fw-semibold mb-3">o inicia sesión con:</p>
