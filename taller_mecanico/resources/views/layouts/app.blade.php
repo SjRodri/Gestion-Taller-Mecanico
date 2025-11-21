@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,10 +27,12 @@
             left: 0;
             padding-top: 20px;
         }
+
         .sidebar .profile {
             text-align: center;
             margin-bottom: 20px;
         }
+
         .profile .avatar {
             width: 60px;
             height: 60px;
@@ -42,6 +45,7 @@
             justify-content: center;
             align-items: center;
         }
+
         .sidebar a {
             display: block;
             padding: 12px 25px;
@@ -49,6 +53,7 @@
             text-decoration: none;
             font-size: 15px;
         }
+
         .sidebar .title {
             font-size: 14px;
             font-weight: bold;
@@ -57,6 +62,7 @@
             padding: 10px 25px;
             margin-top: 15px;
         }
+
         .sidebar a:hover,
         .sidebar a.active {
             background: #333;
@@ -77,6 +83,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- SIDEBAR -->
@@ -102,38 +109,39 @@
 
         <!-- Controles: Solo se muestran en INDEX -->
         @if (request()->routeIs('empleados.index'))
-            <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
 
-                <form method="GET" action="{{ route('empleados.index') }}" class="d-flex gap-2">
+            <form method="GET" action="{{ route('empleados.index') }}" class="d-flex gap-2">
 
-                    <input type="text" name="buscar" value="{{ request('buscar') }}"
-                        class="form-control" placeholder="Buscar empleado...">
+                <input type="text" name="buscar" value="{{ request('buscar') }}"
+                    class="form-control" placeholder="Buscar empleado...">
 
-                    <select name="rol" class="form-select">
-                        <option value="">Rol</option>
-                        <option value="Administrador" {{ request('rol') == 'Administrador' ? 'selected' : '' }}>Administrador</option>
-                        <option value="Mecánico" {{ request('rol') == 'Mecánico' ? 'selected' : '' }}>Mecánico</option>
-                        <option value="Recepción" {{ request('rol') == 'Recepción' ? 'selected' : '' }}>Recepción</option>
-                    </select>
+                <select name="rol" class="form-select">
+                    <option value="">Rol</option>
+                    <option value="Administrador" {{ request('rol') == 'Administrador' ? 'selected' : '' }}>Administrador</option>
+                    <option value="Mecánico" {{ request('rol') == 'Mecánico' ? 'selected' : '' }}>Mecánico</option>
+                    <option value="Recepción" {{ request('rol') == 'Recepción' ? 'selected' : '' }}>Recepción</option>
+                </select>
 
-                    <select name="activo" class="form-select">
-                        <option value="">Activo</option>
-                        <option value="1" {{ request('activo') === '1' ? 'selected' : '' }}>Sí</option>
-                        <option value="0" {{ request('activo') === '0' ? 'selected' : '' }}>No</option>
-                    </select>
+                <select name="activo" class="form-select">
+                    <option value="">Activo</option>
+                    <option value="1" {{ request('activo') === '1' ? 'selected' : '' }}>Sí</option>
+                    <option value="0" {{ request('activo') === '0' ? 'selected' : '' }}>No</option>
+                </select>
 
-                    <button class="btn btn-outline-secondary"><i class="fa-solid fa-filter"></i></button>
-                </form>
+                <button class="btn btn-outline-secondary"><i class="fa-solid fa-filter"></i></button>
+            </form>
 
-                <button class="btn btn-outline-success"
-                    onclick="window.location='{{ route('empleados.create') }}'">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-            </div>
+            <button class="btn btn-outline-success"
+                onclick="window.location='{{ route('empleados.create') }}'">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
         @endif
 
         @yield('content')
     </div>
 
 </body>
+
 </html>
