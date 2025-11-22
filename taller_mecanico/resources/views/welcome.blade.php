@@ -150,13 +150,13 @@
             </div>
 
             <ul class="nav-links">
-                <li><a href="#" class="active">🏠 Inicio</a></li>
-                <li><a href="{{ url('/clientes') }}">👥 Clientes</a></li>
-                <li><a href="#">🧰 Gestión de Talleres</a></li>
-                <li><a href="#">👨‍🔧 Empleados</a></li>
-                <li><a href="#">📊 Reportes</a></li>
-                <li><a href="#">🔧 Repuestos</a></li>
-                <li><a href="#">⚙️ Configuración</a></li>
+            <li><a href="#" class="{{ (!isset($seccion)) ? 'active' : '' }}">🏠 Inicio</a></li>
+            <li><a href="{{ url('/clientes') }}" class="{{ (isset($seccion) && $seccion == 'clientes') ? 'active' : '' }}">👥 Clientes</a></li>
+            <li><a href="#">🧰 Gestión de Talleres</a></li>
+            <li><a href="#">👨‍🔧 Empleados</a></li>
+            <li><a href="#">📊 Reportes</a></li>
+            <li><a href="#">🔧 Repuestos</a></li>
+            <li><a href="{{ route('configuracion.index') }}" class="{{ (isset($seccion) && $seccion == 'configuracion') ? 'active' : '' }}">⚙️ Configuración</a></li>
             </ul>
         </div>
 
@@ -166,11 +166,12 @@
     </div>
 
     <div class="main-content">
+        @if(!isset($seccion) || $seccion != 'configuracion')
         <div class="header">
             <h1>Bienvenido otra vez, Sayd Admin.</h1>
             <p class="fecha">Fecha y hora actual</p>
         </div>
-
+        
         <div class="cards">
             <div class="card">
                 <span class="card-icon">👥</span>
@@ -202,6 +203,10 @@
                 <p>Mapa de Sucursales</p>
             </div>
         </div>
+        @endif
+
+    
+    @yield('content')
     </div>
 
 </body>

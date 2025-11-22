@@ -7,59 +7,73 @@ use Illuminate\Http\Request;
 
 class ConfiguracionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // MOSTRAR LISTA
     public function index()
     {
-        //
+        $configuraciones = Configuracion::all();
+        return view('configuracion.index', compact('configuraciones'))
+               ->with('seccion', 'configuracion'); // Para ocultar bloques del dashboard
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // FORMULARIO DE CREACIÓN
     public function create()
     {
-        //
+        return view('configuracion.create')
+               ->with('seccion', 'configuracion'); // Para ocultar bloques del dashboard
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // GUARDAR NUEVA CONFIGURACIÓN
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'clave' => 'required|max:255|unique:configuracion,clave',
+            'valor' => 'required|max:255',
+            'descripcion' => 'nullable|max:500'
+        ]);
+
+        Configuracion::create([
+            'clave' => $request->clave,
+            'valor' => $request->valor,
+            'descripcion' => $request->descripcion,
+        ]);
+
+        return redirect()->route('configuracion.index')
+                         ->with('success', 'Configuración creada correctamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Configuracion $configuracion)
+    // FORMULARIO DE EDICIÓN
+    public function edit($id)
     {
-        //
+        $config = Configuracion::findOrFail($id);
+        return view('configuracion.edit', compact('config'))
+               ->with('seccion', 'configuracion');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Configuracion $configuracion)
+    // GUARDAR CAMBIOS
+    public function update(Request $request, $id)
     {
-        //
+        $config = Configuracion::findOrFail($id);
+
+        $request->validate([
+            'valor' => 'required|max:255',
+            'descripcion' => 'nullable|max:500'
+        ]);
+
+        $config->valor = $request->valor;
+        $config->descripcion = $request->descripcion ?? $config->descripcion;
+        $config->save();
+
+        return redirect()->route('configuracion.index')
+                         ->with('success', 'Configuración actualizada correctamente.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Configuracion $configuracion)
+    // ELIMINAR CONFIGURACIÓN
+    public function destroy($id)
     {
-        //
-    }
+        $config = Configuracion::findOrFail($id);
+        $config->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Configuracion $configuracion)
-    {
-        //
+        return redirect()->route('configuracion.index')
+                         ->with('success', 'Configuración eliminada correctamente.');
     }
 }
