@@ -5,6 +5,7 @@
 
 @section('content')
 <div class="card shadow-sm">
+
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Listado de Repuestos</h5>
         
@@ -13,7 +14,33 @@
         </a>
     </div>
 
+    <!--FILTRO DE REPUESTOS -->
+    <div class="px-3 pt-3">
+        <form method="GET" action="{{ route('repuestos.index') }}" class="d-flex align-items-center gap-2">
+
+            <select name="filter" class="form-select form-select-sm" style="width: 220px;">
+                <option value="">-- Mostrar todos --</option>
+                <option value="disponibles" {{ (isset($filter) && $filter == 'disponibles') ? 'selected' : '' }}>
+                    Disponibles
+                </option>
+                <option value="sin_stock" {{ (isset($filter) && $filter == 'sin_stock') ? 'selected' : '' }}>
+                    Sin stock
+                </option>
+                <option value="bajo_stock" {{ (isset($filter) && $filter == 'bajo_stock') ? 'selected' : '' }}>
+                    Bajo stock
+                </option>
+            </select>
+
+            <button class="btn btn-outline-primary btn-sm">
+                <i class="fa-solid fa-filter"></i> Filtrar
+            </button>
+
+        </form>
+    </div>
+    <!-- FIN FILTRO -->
+
     <div class="card-body p-0">
+
         @if(session('success'))
             <div class="alert alert-success m-3">{{ session('success') }}</div>
         @endif
@@ -22,11 +49,11 @@
             <thead class="table-light">
                 <tr>
                     <th>ID</th>
-                    <th>Descripción</th>
+                    <th>Nombre del Repuesto</th>
                     <th>Categoría</th>
                     <th>Precio</th>
                     <th>Cantidad</th>
-                    <th>Reorder Threshold</th>
+                    <th>Reordenar</th>
                     <th class="text-end">Acciones</th>
                 </tr>
             </thead>
@@ -40,13 +67,12 @@
                         <td>{{ $rep->cantidad }}</td>
                         <td>{{ $rep->reorder_threshold }}</td>
                         <td class="text-end">
-                            <!-- Botón Editar -->
+                            
                             <a href="{{ route('repuestos.edit', $rep->repuesto_id) }}" 
                                class="btn btn-sm btn-outline-primary" title="Editar">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
 
-                            <!-- Botón Eliminar -->
                             <form action="{{ route('repuestos.destroy', $rep->repuesto_id) }}" 
                                   method="POST" style="display:inline-block">
                                 @csrf
@@ -56,8 +82,10 @@
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </form>
+
                         </td>
                     </tr>
+
                 @empty
                     <tr>
                         <td colspan="7" class="text-center text-muted py-3">

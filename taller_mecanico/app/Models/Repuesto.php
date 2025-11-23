@@ -8,7 +8,10 @@ class Repuesto extends Model
 {
     protected $table = 'repuestos';
     protected $primaryKey = 'repuesto_id';
-    public $timestamps = false; // no tiene created_at ni updated_at
+
+    public $incrementing = true;  
+
+    public $timestamps = false;
 
     protected $fillable = [
         'descripcion_repuesto',

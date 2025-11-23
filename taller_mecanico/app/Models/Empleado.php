@@ -8,8 +8,8 @@ class Empleado extends Model
 {
     protected $table = 'empleados';
     protected $primaryKey = 'empleado_id';
-    public $timestamps = false; // no tienes created_at ni updated_at
-    
+    public $timestamps = false;
+
     protected $fillable = [
         'dni',
         'nombre',

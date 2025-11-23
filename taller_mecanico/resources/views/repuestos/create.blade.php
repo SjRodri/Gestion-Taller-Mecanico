@@ -29,7 +29,7 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="descripcion_repuesto" class="form-label">Descripción del Repuesto</label>
+                    <label for="descripcion_repuesto" class="form-label">Nombre del Repuesto</label>
                     <input 
                         type="text" 
                         name="descripcion_repuesto" 
@@ -88,7 +88,7 @@
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <label for="reorder_threshold" class="form-label">Reorder Threshold</label>
+                    <label for="reorder_threshold" class="form-label">Reordenar Producto</label>
                     <input 
                         type="number" 
                         name="reorder_threshold" 

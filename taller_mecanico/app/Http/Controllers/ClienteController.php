@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class ClienteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    /* LISTAR */
     public function index()
     {
         $clientes = Cliente::leftJoin('vehiculos', 'clientes.cliente_id', '=', 'vehiculos.cliente_id')
@@ -36,20 +34,16 @@ class ClienteController extends Controller
             )
             ->get();
 
-        return view('clientes', ['clientes' => $clientes]);
+        return view('clientes.index', ['clientes' => $clientes]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    /* FORMULARIO CREAR */
     public function create()
     {
         return view('clientes.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    /* GUARDAR CLIENTE */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -61,48 +55,43 @@ class ClienteController extends Controller
             'correo' => 'nullable|email|max:255|unique:clientes,correo',
         ]);
 
-        // Insertar cliente
-        DB::table('clientes')->insert([
-            'dni' => $validated['dni'] ?? null,
-            'nombre' => $validated['nombre'],
-            'apellido' => $validated['apellido'],
-            'telefono' => $validated['telefono'] ?? null,
-            'direccion' => $validated['direccion'] ?? null,
-            'correo' => $validated['correo'] ?? null,
-        ]);
+        DB::table('clientes')->insert($validated);
 
         return redirect('/clientes')->with('success', 'Cliente agregado correctamente');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Cliente $cliente)
+    /* FORMULARIO EDITAR */
+    public function edit($id)
     {
-        //
+        $cliente = Cliente::findOrFail($id);
+        return view('clientes.edit', compact('cliente'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Cliente $cliente)
+    /* ACTUALIZAR CLIENTE */
+    public function update(Request $request, $id)
     {
-        //
+        $cliente = Cliente::findOrFail($id);
+
+        $validated = $request->validate([
+            'dni' => 'nullable|string|max:50',
+            'nombre' => 'required|string|max:100',
+            'apellido' => 'required|string|max:100',
+            'telefono' => 'nullable|string|max:50',
+            'direccion' => 'nullable|string|max:255',
+            'correo' => 'nullable|email|max:255|unique:clientes,correo,' . $cliente->cliente_id . ',cliente_id',
+        ]);
+
+        $cliente->update($validated);
+
+        return redirect('/clientes')->with('success', 'Cliente actualizado correctamente');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Cliente $cliente)
+    /* ELIMINAR CLIENTE */
+    public function destroy($id)
     {
-        //
-    }
+        $cliente = Cliente::findOrFail($id);
+        $cliente->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Cliente $cliente)
-    {
-        //
+        return redirect('/clientes')->with('success', 'Cliente eliminado');
     }
 }

@@ -10,11 +10,30 @@ class RepuestoController extends Controller
     /**
      * Mostrar listado de repuestos.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $repuestos = Repuesto::orderBy('repuesto_id', 'asc')->get();
+        // filtroooo
+        $filter = $request->get('filter');
 
-        return view('repuestos.index', compact('repuestos'));
+        // Consulta base
+        $query = Repuesto::orderBy('repuesto_id', 'asc');
+
+        // aplicar el filtrooooo
+        if ($filter === 'disponibles') {
+            $query->where('cantidad', '>', 0);
+        }
+        elseif ($filter === 'sin_stock') {
+            $query->where('cantidad', '=', 0);
+        }
+        elseif ($filter === 'bajo_stock') {
+            $query->whereColumn('cantidad', '<=', 'reorder_threshold');
+        }
+
+        // Obtener datos filtrados
+        $repuestos = $query->get();
+
+        // Retornar vista con filtro incluido
+        return view('repuestos.index', compact('repuestos', 'filter'));
     }
 
     /**
