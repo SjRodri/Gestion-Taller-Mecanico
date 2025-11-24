@@ -119,9 +119,16 @@
                 <select name="rol" class="form-select">
                     <option value="">Rol</option>
                     <option value="Administrador" {{ request('rol') == 'Administrador' ? 'selected' : '' }}>Administrador</option>
-                    <option value="Mecánico" {{ request('rol') == 'Mecánico' ? 'selected' : '' }}>Mecánico</option>
-                    <option value="Recepción" {{ request('rol') == 'Recepción' ? 'selected' : '' }}>Recepción</option>
+                    <option value="Mecánico General" {{ request('rol') == 'Mecánico General' ? 'selected' : '' }}>Mecánico General</option>
+                    <option value="Recepcionista" {{ request('rol') == 'Recepcionista' ? 'selected' : '' }}>Recepcionista</option>
+                    <option value="Electricista Automotriz" {{ request('rol') == 'Electricista Automotriz' ? 'selected' : '' }}>Electricista Automotriz</option>
+                    <option value="Pintor Automotriz" {{ request('rol') == 'Pintor Automotriz' ? 'selected' : '' }}>Pintor Automotriz</option>
+                    <option value="Asistente de Taller" {{ request('rol') == 'Asistente de Taller' ? 'selected' : '' }}>Asistente de Taller</option>
+                    <option value="Técnico en Diagnóstico" {{ request('rol') == 'Técnico en Diagnóstico' ? 'selected' : '' }}>Técnico en Diagnóstico</option>
+                    <option value="Contador" {{ request('rol') == 'Contador' ? 'selected' : '' }}>Contador</option>
+                    <option value="Mecánico Diesel" {{ request('rol') == 'Mecánico Diesel' ? 'selected' : '' }}>Mecánico Diesel</option>
                 </select>
+
 
                 <select name="activo" class="form-select">
                     <option value="">Activo</option>
