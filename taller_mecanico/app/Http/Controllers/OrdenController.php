@@ -3,63 +3,97 @@
 namespace App\Http\Controllers;
 
 use App\Models\Orden;
+use App\Models\Cliente;
+use App\Models\Taller;
+use App\Models\Vehiculo;
 use Illuminate\Http\Request;
 
 class OrdenController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // LISTADO
+    public function index(Request $request)
     {
-        //
+        $buscar = $request->input('buscar');
+        $estado = $request->input('estado');
+
+        $ordenes = Orden::query()
+            ->when($buscar, function ($q) use ($buscar) {
+                $q->where('descripcion_orden', 'LIKE', "%$buscar%")
+                    ->orWhere('orden_id', 'LIKE', "%$buscar%");
+            })
+            ->when($estado, function ($q) use ($estado) {
+                $q->where('estado', $estado);
+            })
+            ->orderBy('orden_id', 'DESC')
+            ->paginate(12)
+            ->appends($request->query());
+
+        return view('ordenes.index', compact('ordenes', 'buscar', 'estado'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // FORM CREAR
     public function create()
     {
-        //
+        $clientes = Cliente::all();
+        $talleres = Taller::all();
+        $vehiculos = Vehiculo::all();
+
+        return view('ordenes.create', compact('clientes', 'talleres', 'vehiculos'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // GUARDAR NUEVA ORDEN
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'descripcion_orden' => 'required',
+            'cliente_id' => 'required',
+            'fecha' => 'required|date'
+        ]);
+
+        Orden::create($request->all());
+
+        return redirect()->route('ordenes.index')
+            ->with('success', 'Orden creada correctamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Orden $orden)
+    // FORM EDITAR
+    public function edit($id)
     {
-        //
+        $orden = Orden::findOrFail($id);
+
+        $clientes = Cliente::all();
+        $talleres = Taller::all();
+        $vehiculos = Vehiculo::all();
+
+        return view('ordenes.edit', compact('orden', 'clientes', 'talleres', 'vehiculos'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Orden $orden)
+    // ACTUALIZAR ORDEN
+    public function update(Request $request, $id)
     {
-        //
+        $orden = Orden::findOrFail($id);
+
+        $orden->update($request->all());
+
+        return redirect()->route('ordenes.index')
+            ->with('success', 'Orden actualizada correctamente.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Orden $orden)
+    // ELIMINAR → SOLO CAMBIA ESTADO
+    public function destroy(Request $request, $id)
     {
-        //
-    }
+        $orden = Orden::findOrFail($id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Orden $orden)
-    {
-        //
+        // Validar selección
+        $request->validate([
+            'motivo' => 'required|in:cancelada,finalizada'
+        ]);
+
+        // Solo cambia el estado
+        $orden->estado = $request->motivo;
+        $orden->save();
+
+        return redirect()->route('ordenes.index')
+            ->with('success', 'La orden fue marcada como ' . $request->motivo);
     }
 }
