@@ -49,6 +49,7 @@
                         <th>Código</th>
                         <th>Descripción</th>
                         <th>Taller</th>
+                        <th>Vehículos</th>
                         <th>Fecha</th>
                         <th>Cliente</th>
                         <th>Estado</th>
@@ -62,19 +63,21 @@
                         <td>ORD-{{ $o->orden_id }}</td>
                         <td>{{ $o->descripcion_orden }}</td>
                         <td>{{ $o->taller->nombre ?? '—' }}</td>
+                        <td>{{ $o->vehiculo->modelo ?? '—' }}</td>
                         <td>{{ \Carbon\Carbon::parse($o->fecha)->format('M d') }}</td>
 
                         <td>{{ $o->cliente->nombre }} {{ $o->cliente->apellido }}</td>
 
                         <td>
                             @php
-                                $color = [
-                                    'activa' => 'primary',
-                                    'espera' => 'warning',
-                                    'finalizada' => 'success',
-                                    'cancelada' => 'danger'
-                                ][$o->estado] ?? 'secondary';
+                            $color = [
+                            'activa' => 'primary',
+                            'espera' => 'warning',
+                            'finalizada' => 'success',
+                            'cancelada' => 'danger'
+                            ][$o->estado] ?? 'secondary';
                             @endphp
+
                             <span class="badge bg-{{ $color }}">
                                 {{ ucfirst($o->estado) }}
                             </span>
@@ -83,7 +86,7 @@
                         <td class="text-end">
 
                             <a href="{{ route('ordenes.edit', $o->orden_id) }}"
-                               class="btn btn-outline-primary btn-sm">
+                                class="btn btn-outline-primary btn-sm">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
 
@@ -109,7 +112,7 @@
 </div>
 
 <!-- MODAL ELIMINAR -->
-<div class="modal fade" id="modalEliminar">
+<div class="modal fade" id="modalEliminar" tabindex="-1">
     <div class="modal-dialog">
         <form method="POST" id="formEliminar">
             @csrf
@@ -117,31 +120,43 @@
 
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">¿Qué ocurrió con la orden?</h5>
+                    <h5 class="modal-title">¿La orden fue finalizada o cancelada?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
-                <div class="modal-body">
-                    <select name="motivo" class="form-select" required>
-                        <option value="">Seleccione opción</option>
-                        <option value="cancelada">Cancelar orden</option>
-                        <option value="finalizada">Marcar como finalizada</option>
-                    </select>
+                <div class="modal-body text-center">
+                    <p class="fw-bold">Seleccione una opción:</p>
+
+                    <button type="submit" name="estado_final" value="finalizada"
+                        class="btn btn-success w-100 mb-2">
+                        Finalizada
+                    </button>
+
+                    <button type="submit" name="estado_final" value="cancelada"
+                        class="btn btn-danger w-100">
+                        Cancelada
+                    </button>
                 </div>
 
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button class="btn btn-danger">Guardar</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
 
+<!-- BOOTSTRAP JS PARA MODALES -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-function abrirModalEliminar(id) {
-    document.getElementById('formEliminar').action = "/ordenes/" + id;
-    new bootstrap.Modal(document.getElementById('modalEliminar')).show();
-}
+    function abrirModalEliminar(id) {
+        document.getElementById('formEliminar').action =
+            "{{ url('ordenes') }}/" + id;
+
+        const modal = new bootstrap.Modal(document.getElementById('modalEliminar'));
+        modal.show();
+    }
 </script>
 
 @endsection

@@ -16,7 +16,8 @@ class Orden extends Model
         'cliente_id',
         'vehiculo_id',
         'fecha',
-        'estado'
+        'estado',
+        'motivo'
     ];
 
     public function taller()
@@ -31,6 +32,6 @@ class Orden extends Model
 
     public function vehiculo()
     {
-        return $this->belongsTo(Vehiculo::class, 'vehiculo_id');
+        return $this->belongsTo(Vehiculo::class, 'vehiculo_id', 'vehiculo_id');
     }
 }

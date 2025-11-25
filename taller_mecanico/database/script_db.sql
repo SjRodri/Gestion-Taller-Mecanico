@@ -149,3 +149,6 @@ LEFT JOIN vehiculos v ON c.vehiculo_id = v.vehiculo_id
 WHERE c.fecha_hora >= NOW()
 ORDER BY c.fecha_hora ASC;
 
+ALTER TABLE ordenes 
+MODIFY estado ENUM('activa','espera','finalizada','cancelada') 
+DEFAULT 'espera';

@@ -100,19 +100,19 @@ class OrdenController extends Controller
             ->with('success', 'Orden actualizada correctamente.');
     }
 
-    // ELIMINAR → SOLO CAMBIA ESTADO
+    // ELIMINAR → SOLO CAMBIA ESTADO (FINALIZADA o CANCELADA)
     public function destroy(Request $request, $id)
     {
         $orden = Orden::findOrFail($id);
 
         $request->validate([
-            'motivo' => 'required|in:cancelada,finalizada'
+            'estado_final' => 'required|in:cancelada,finalizada'
         ]);
 
-        $orden->estado = $request->motivo;
+        $orden->estado = $request->estado_final;
         $orden->save();
 
         return redirect()->route('ordenes.index')
-            ->with('success', 'La orden fue marcada como ' . $request->motivo);
+            ->with('success', 'La orden fue marcada como ' . $request->estado_final);
     }
 }
