@@ -18,10 +18,10 @@ class EmpleadoController extends Controller
 
             ->when($busqueda, function ($q) use ($busqueda) {
                 $q->where('nombre', 'LIKE', "%$busqueda%")
-                  ->orWhere('apellido', 'LIKE', "%$busqueda%")
-                  ->orWhere('dni', 'LIKE', "%$busqueda%")
-                  ->orWhere('rol', 'LIKE', "%$busqueda%")
-                  ->orWhere('correo', 'LIKE', "%$busqueda%");
+                    ->orWhere('apellido', 'LIKE', "%$busqueda%")
+                    ->orWhere('dni', 'LIKE', "%$busqueda%")
+                    ->orWhere('rol', 'LIKE', "%$busqueda%")
+                    ->orWhere('correo', 'LIKE', "%$busqueda%");
             })
 
             ->when($rol, function ($q) use ($rol) {
@@ -71,10 +71,13 @@ class EmpleadoController extends Controller
         return redirect()->route('empleados.index')->with('success', 'Empleado actualizado.');
     }
 
-    // Eliminar empleado
+    // Marcar empleado como inactivo en lugar de eliminarlo
     public function destroy(Empleado $empleado)
     {
-        $empleado->delete();
-        return redirect()->route('empleados.index')->with('success', 'Empleado eliminado.');
+        $empleado->activo = 0; // marcar como inactivo
+        $empleado->save();
+
+        return redirect()->route('empleados.index')
+            ->with('success', 'Empleado marcado como inactivo.');
     }
 }

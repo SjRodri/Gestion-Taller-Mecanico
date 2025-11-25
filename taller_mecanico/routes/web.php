@@ -28,3 +28,7 @@ Route::get('/registro', function () {
 Route::get('/login', function () {
     return view('login');
 })->name('login');
+
+use App\Http\Controllers\OrdenController;
+
+Route::resource('ordenes', OrdenController::class);

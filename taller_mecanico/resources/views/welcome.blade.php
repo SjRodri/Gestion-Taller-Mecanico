@@ -153,7 +153,7 @@
                 <li><a href="#" class="active">🏠 Inicio</a></li>
                 <li><a href="{{ url('/clientes') }}">👥 Clientes</a></li>
                 <li><a href="#">🧰 Gestión de Talleres</a></li>
-                <li><a href="#">👨‍🔧 Empleados</a></li>
+                <li><a href="{{ url('/empleados') }}">👨‍🔧 Empleados</a></li>
                 <li><a href="#">📊 Reportes</a></li>
                 <li><a href="#">🔧 Repuestos</a></li>
                 <li><a href="#">⚙️ Configuración</a></li>
@@ -179,7 +179,7 @@
 
             <div class="card">
                 <span class="card-icon">✔️</span>
-                <p>Estado de Órdenes</p>
+                <a href="{{ url('/ordenes') }}">Estado de Órdenes</a>
             </div>
 
             <div class="card">
