@@ -50,7 +50,14 @@ class OrdenController extends Controller
             'fecha' => 'required|date'
         ]);
 
-        Orden::create($request->all());
+        Orden::create([
+            'descripcion_orden' => $request->descripcion_orden,
+            'cliente_id' => $request->cliente_id,
+            'taller_id' => $request->taller_id,
+            'vehiculo_id' => $request->vehiculo_id,
+            'fecha' => $request->fecha,
+            'estado' => 'activa'
+        ]);
 
         return redirect()->route('ordenes.index')
             ->with('success', 'Orden creada correctamente.');
@@ -71,9 +78,23 @@ class OrdenController extends Controller
     // ACTUALIZAR ORDEN
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'descripcion_orden' => 'required',
+            'cliente_id' => 'required',
+            'fecha' => 'required|date',
+            'estado' => 'required'
+        ]);
+
         $orden = Orden::findOrFail($id);
 
-        $orden->update($request->all());
+        $orden->update([
+            'descripcion_orden' => $request->descripcion_orden,
+            'cliente_id' => $request->cliente_id,
+            'taller_id' => $request->taller_id,
+            'vehiculo_id' => $request->vehiculo_id,
+            'fecha' => $request->fecha,
+            'estado' => $request->estado
+        ]);
 
         return redirect()->route('ordenes.index')
             ->with('success', 'Orden actualizada correctamente.');
@@ -84,12 +105,10 @@ class OrdenController extends Controller
     {
         $orden = Orden::findOrFail($id);
 
-        // Validar selección
         $request->validate([
             'motivo' => 'required|in:cancelada,finalizada'
         ]);
 
-        // Solo cambia el estado
         $orden->estado = $request->motivo;
         $orden->save();
 

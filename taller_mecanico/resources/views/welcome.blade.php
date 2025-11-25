@@ -179,7 +179,7 @@
 
             <div class="card">
                 <span class="card-icon">✔️</span>
-                <p>Estado de Órdenes</p>
+                <a href="{{ url('/ordenes') }}">Estado de Órdenes</a>
             </div>
 
             <div class="card">
