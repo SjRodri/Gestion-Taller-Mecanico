@@ -44,13 +44,11 @@
 
                     <td class="text-end">
 
-                        <!-- BOTÓN EDITAR IGUAL A ÓRDENES -->
                         <a href="{{ route('empleados.edit', $emp->empleado_id) }}"
                             class="btn btn-outline-primary btn-sm">
                             <i class="fa-solid fa-pen"></i>
                         </a>
 
-                        <!-- BOTÓN ELIMINAR IGUAL A ÓRDENES -->
                         <form action="{{ route('empleados.destroy', $emp->empleado_id) }}"
                             method="POST" style="display:inline">
                             @csrf
