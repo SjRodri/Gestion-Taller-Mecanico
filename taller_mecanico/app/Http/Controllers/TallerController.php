@@ -78,11 +78,13 @@ class TallerController extends Controller
         $request->validate([
             'nombre'    => 'required',
             'ubicacion' => 'required',
-            'telefono'  => 'required',
+            'telefono'  => 'required|digits:8',
             'email'     => 'required|email',
             'horario'   => 'required',
             'latitude'  => 'required|numeric',
             'longitude' => 'required|numeric',
+        ], [
+            'telefono.digits' => 'El teléfono debe tener exactamente 8 números.',
         ]);
 
         Taller::create($request->all());
@@ -104,11 +106,13 @@ class TallerController extends Controller
         $request->validate([
             'nombre'    => 'required',
             'ubicacion' => 'required',
-            'telefono'  => 'required',
+            'telefono'  => 'required|digits:8',
             'email'     => 'required|email',
             'horario'   => 'required',
             'latitude'  => 'required|numeric',
             'longitude' => 'required|numeric',
+        ], [
+            'telefono.digits' => 'El teléfono debe tener exactamente 8 números.',
         ]);
 
         $taller = Taller::findOrFail($id);
