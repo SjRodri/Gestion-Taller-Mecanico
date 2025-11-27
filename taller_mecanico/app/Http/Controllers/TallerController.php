@@ -7,23 +7,63 @@ use Illuminate\Http\Request;
 
 class TallerController extends Controller
 {
-
-    // LISTA CON FILTROS
     public function index(Request $request)
     {
-        $buscar = $request->input('buscar');
+        $buscar        = $request->input('buscar');          // Buscador general
+        $nombreSelect  = $request->input('nombre_select');   // Filtro por nombre exacto
+        $ubicacion     = $request->input('ubicacion');       // Filtro por ubicación
 
-        $talleres = Taller::when($buscar, function ($q) use ($buscar) {
-                $q->where('nombre', 'LIKE', "%$buscar%")
-                  ->orWhere('ubicacion', 'LIKE', "%$buscar%")
-                  ->orWhere('telefono', 'LIKE', "%$buscar%")
-                  ->orWhere('email', 'LIKE', "%$buscar%");
+        // 🔹 Obtener lista de nombres únicos para el select
+        $nombresTalleres = Taller::select('nombre')
+            ->distinct()
+            ->orderBy('nombre')
+            ->get();
+
+        // 🔹 Obtener lista de ubicaciones únicas para el select
+        $ubicacionesTalleres = Taller::select('ubicacion')
+            ->distinct()
+            ->orderBy('ubicacion')
+            ->get();
+
+        // QUERY PRINCIPAL
+        $talleres = Taller::query()
+
+            // 🔍 BUSCADOR GENERAL (busca en varios campos)
+            ->when($buscar, function ($q) use ($buscar) {
+                $q->where(function ($sub) use ($buscar) {
+                    $sub->where('nombre', 'LIKE', "%$buscar%")
+                        ->orWhere('ubicacion', 'LIKE', "%$buscar%")
+                        ->orWhere('telefono', 'LIKE', "%$buscar%")
+                        ->orWhere('email', 'LIKE', "%$buscar%")
+                        ->orWhere('horario', 'LIKE', "%$buscar%");
+                });
             })
+
+            // 🎯 SELECT DE NOMBRE EXACTO
+            ->when($nombreSelect, function ($q) use ($nombreSelect) {
+                $q->where('nombre', $nombreSelect);
+            })
+
+            // 🎯 SELECT DE UBICACIÓN EXACTA
+            ->when($ubicacion, function ($q) use ($ubicacion) {
+                $q->where('ubicacion', $ubicacion);
+            })
+
             ->orderBy('taller_id', 'DESC')
             ->paginate(10)
             ->appends($request->query());
 
-        return view('talleres.index', compact('talleres', 'buscar'));
+        return view(
+            'talleres.index',
+            compact(
+                'talleres',
+                'buscar',
+                'ubicacion',
+                'nombreSelect',
+                'nombresTalleres',
+                'ubicacionesTalleres'
+            )
+        );
     }
 
     // FORMULARIO CREAR
@@ -37,12 +77,12 @@ class TallerController extends Controller
     {
         $request->validate([
             'nombre'    => 'required',
-            'ubicacion' => 'nullable',
-            'telefono'  => 'nullable',
-            'email'     => 'nullable|email',
-            'horario'   => 'nullable',
-            'latitude'  => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
+            'ubicacion' => 'required',
+            'telefono'  => 'required',
+            'email'     => 'required|email',
+            'horario'   => 'required',
+            'latitude'  => 'required|numeric',
+            'longitude' => 'required|numeric',
         ]);
 
         Taller::create($request->all());
@@ -63,12 +103,12 @@ class TallerController extends Controller
     {
         $request->validate([
             'nombre'    => 'required',
-            'ubicacion' => 'nullable',
-            'telefono'  => 'nullable',
-            'email'     => 'nullable|email',
-            'horario'   => 'nullable',
-            'latitude'  => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
+            'ubicacion' => 'required',
+            'telefono'  => 'required',
+            'email'     => 'required|email',
+            'horario'   => 'required',
+            'latitude'  => 'required|numeric',
+            'longitude' => 'required|numeric',
         ]);
 
         $taller = Taller::findOrFail($id);

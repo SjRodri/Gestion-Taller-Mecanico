@@ -13,7 +13,7 @@
 
     <form method="GET" class="d-flex gap-2">
 
-        {{-- INPUT CON ICONO --}}
+        {{-- INPUT CON ICONO (BUSCADOR GENERAL) --}}
         <div class="input-group">
             <span class="input-group-text bg-white">
                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -21,30 +21,40 @@
             <input type="text"
                 name="buscar"
                 class="form-control"
-                placeholder="Buscar taller..."
+                placeholder="Buscar"
                 value="{{ $buscar }}">
         </div>
 
-        {{-- FILTRO DE UBICACIÓN --}}
-        <select name="ubicacion" class="form-select">
-            <option value="">Ubicación</option>
-            @foreach($talleres->pluck('ubicacion')->unique() as $u)
-            @if($u)
-            <option value="{{ $u }}" {{ request('ubicacion') == $u ? 'selected' : '' }}>
-                {{ $u }}
+        {{-- ⭐ SELECT NUEVO: FILTRAR POR NOMBRE EXACTO --}}
+        <select name="nombre_select" class="form-select">
+            <option value="">Nombre</option>
+            @foreach($nombresTalleres as $item)
+            <option value="{{ $item->nombre }}"
+                {{ request('nombre_select') == $item->nombre ? 'selected' : '' }}>
+                {{ $item->nombre }}
             </option>
-            @endif
             @endforeach
         </select>
 
-        {{-- FILTRO BOTÓN --}}
+        {{-- SELECT UBICACIÓN (ahora igual que Nombre) --}}
+        <select name="ubicacion" class="form-select">
+            <option value="">Ubicación</option>
+            @foreach($ubicacionesTalleres as $u)
+            <option value="{{ $u->ubicacion }}"
+                {{ request('ubicacion') == $u->ubicacion ? 'selected' : '' }}>
+                {{ $u->ubicacion }}
+            </option>
+            @endforeach
+        </select>
+
+        {{-- BOTÓN FILTRAR --}}
         <button class="btn btn-outline-secondary">
             <i class="fa-solid fa-filter"></i>
         </button>
 
     </form>
 
-    {{-- BOTÓN + COMO EMPLEADOS --}}
+    {{-- BOTÓN + --}}
     <a href="{{ route('talleres.create') }}"
         class="btn btn-outline-success rounded-3"
         style="font-size: 22px; padding: 4px 12px;">
@@ -83,7 +93,6 @@
                     <td>{{ $t->longitude }}</td>
 
                     <td class="text-end">
-
                         <a href="{{ route('talleres.edit', $t->taller_id) }}"
                             class="btn btn-outline-primary btn-sm">
                             <i class="fa-solid fa-pen"></i>
