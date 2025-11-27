@@ -15,14 +15,14 @@
 
                 <div class="mb-3">
                     <label class="form-label">Descripción</label>
-                    <textarea class="form-control" name="descripcion_orden" required>{{ $orden->descripcion_orden }}</textarea>
+                    <textarea class="form-control" name="descripcion_orden" required>{{ old('descripcion_orden', $orden->descripcion_orden) }}</textarea>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Cliente</label>
                     <select name="cliente_id" class="form-select" required>
                         @foreach ($clientes as $c)
-                        <option value="{{ $c->cliente_id }}" {{ $orden->cliente_id == $c->cliente_id ? 'selected' : '' }}>
+                        <option value="{{ $c->cliente_id }}" {{ old('cliente_id', $orden->cliente_id) == $c->cliente_id ? 'selected' : '' }}>
                             {{ $c->nombre }} {{ $c->apellido }}
                         </option>
                         @endforeach
@@ -31,10 +31,9 @@
 
                 <div class="mb-3">
                     <label class="form-label">Taller</label>
-                    <select name="taller_id" class="form-select">
-                        <option value="">Ninguno</option>
+                    <select name="taller_id" class="form-select" required>
                         @foreach ($talleres as $t)
-                        <option value="{{ $t->taller_id }}" {{ $orden->taller_id == $t->taller_id ? 'selected' : '' }}>
+                        <option value="{{ $t->taller_id }}" {{ old('taller_id', $orden->taller_id) == $t->taller_id ? 'selected' : '' }}>
                             {{ $t->nombre }}
                         </option>
                         @endforeach
@@ -46,8 +45,8 @@
                     <select name="vehiculo_id" class="form-select">
                         <option value="">Ninguno</option>
                         @foreach ($vehiculos as $v)
-                        <option value="{{ $v->vehiculo_id }}" {{ $orden->vehiculo_id == $v->vehiculo_id ? 'selected' : '' }}>
-                            {{ $v->marca }} {{ $v->modelo }}
+                        <option value="{{ $v->vehiculo_id }}" {{ old('vehiculo_id', $orden->vehiculo_id) == $v->vehiculo_id ? 'selected' : '' }}>
+                            {{ $v->marca }} - {{ $v->modelo }}
                         </option>
                         @endforeach
                     </select>
@@ -55,16 +54,19 @@
 
                 <div class="mb-3">
                     <label class="form-label">Fecha</label>
-                    <input type="date" class="form-control" name="fecha" value="{{ $orden->fecha }}" required>
+                    <input type="date" class="form-control" name="fecha"
+                        value="{{ old('fecha', $orden->fecha) }}"
+                        min="{{ date('Y-m-d') }}"
+                        required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Estado</label>
                     <select name="estado" class="form-select" required>
-                        <option value="activa" {{ $orden->estado=='activa'?'selected':'' }}>Activa</option>
-                        <option value="espera" {{ $orden->estado=='espera'?'selected':'' }}>En espera</option>
-                        <option value="finalizada" {{ $orden->estado=='finalizada'?'selected':'' }}>Finalizada</option>
-                        <option value="cancelada" {{ $orden->estado=='cancelada'?'selected':'' }}>Cancelada</option>
+                        <option value="activa" {{ old('estado', $orden->estado)=='activa'?'selected':'' }}>Activa</option>
+                        <option value="espera" {{ old('estado', $orden->estado)=='espera'?'selected':'' }}>En espera</option>
+                        <option value="finalizada" {{ old('estado', $orden->estado)=='finalizada'?'selected':'' }}>Finalizada</option>
+                        <option value="cancelada" {{ old('estado', $orden->estado)=='cancelada'?'selected':'' }}>Cancelada</option>
                     </select>
                 </div>
 
