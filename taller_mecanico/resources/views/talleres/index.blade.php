@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('page-title', 'Listado de Talleres')
+@section('page-title', 'Talleres')
 
 @section('content')
 
@@ -8,25 +8,54 @@
 <div class="alert alert-success">{{ session('success') }}</div>
 @endif
 
-<div class="d-flex justify-content-between mb-3">
+{{-- FILTROS --}}
+<div class="d-flex justify-content-between align-items-center mb-3">
 
     <form method="GET" class="d-flex gap-2">
-        <input type="text" name="buscar" class="form-control"
-            placeholder="Buscar por nombre, ubicación, teléfono..."
-            value="{{ $buscar }}">
-        <button class="btn btn-primary">Buscar</button>
+
+        {{-- INPUT CON ICONO --}}
+        <div class="input-group">
+            <span class="input-group-text bg-white">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+            <input type="text"
+                name="buscar"
+                class="form-control"
+                placeholder="Buscar taller..."
+                value="{{ $buscar }}">
+        </div>
+
+        {{-- FILTRO DE UBICACIÓN --}}
+        <select name="ubicacion" class="form-select">
+            <option value="">Ubicación</option>
+            @foreach($talleres->pluck('ubicacion')->unique() as $u)
+            @if($u)
+            <option value="{{ $u }}" {{ request('ubicacion') == $u ? 'selected' : '' }}>
+                {{ $u }}
+            </option>
+            @endif
+            @endforeach
+        </select>
+
+        {{-- FILTRO BOTÓN --}}
+        <button class="btn btn-outline-secondary">
+            <i class="fa-solid fa-filter"></i>
+        </button>
+
     </form>
 
-    <a href="{{ route('talleres.create') }}" class="btn btn-success" style="font-size: 20px;">
+    {{-- BOTÓN + COMO EMPLEADOS --}}
+    <a href="{{ route('talleres.create') }}"
+        class="btn btn-outline-success rounded-3"
+        style="font-size: 22px; padding: 4px 12px;">
         +
     </a>
-
 </div>
 
-<div class="card shadow-sm">
+{{-- TABLA --}}
+<div class="card shadow-sm border-0">
     <div class="card-body p-0">
-
-        <table class="table table-hover align-middle mb-0">
+        <table class="table table-hover mb-0 align-middle">
             <thead class="bg-light">
                 <tr>
                     <th>ID</th>
@@ -65,7 +94,6 @@
                             style="display:inline">
                             @csrf
                             @method('DELETE')
-
                             <button class="btn btn-outline-danger btn-sm"
                                 onclick="return confirm('¿Eliminar este taller?')">
                                 <i class="fa-solid fa-xmark"></i>
@@ -73,13 +101,11 @@
                         </form>
 
                     </td>
-
                 </tr>
                 @endforeach
             </tbody>
 
         </table>
-
     </div>
 </div>
 
