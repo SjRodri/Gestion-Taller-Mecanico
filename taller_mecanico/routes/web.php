@@ -31,3 +31,7 @@ Route::get('/login', function () {
 use App\Http\Controllers\OrdenController;
 
 Route::resource('ordenes', OrdenController::class);
+
+use App\Http\Controllers\TallerController;
+
+Route::resource('talleres', TallerController::class);
