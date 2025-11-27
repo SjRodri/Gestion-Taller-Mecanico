@@ -6,6 +6,21 @@
 
 <div class="container-fluid">
 
+    <!-- MENSAJES DE ÉXITO / ERROR -->
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+
     <!-- BUSCADOR -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <form method="GET" action="{{ route('ordenes.index') }}" class="d-flex gap-2">
@@ -41,10 +56,9 @@
                 </option>
                 @endforeach
             </select>
+
             <!-- FILTRO POR FECHA -->
             <input type="date" name="fecha" class="form-control" value="{{ request('fecha') }}">
-
-
 
             <select name="estado" class="form-select">
                 <option value="">Estado</option>
@@ -91,9 +105,7 @@
                         <td>{{ $o->taller->nombre ?? '—' }}</td>
                         <td>{{ $o->vehiculo->modelo ?? '—' }}</td>
                         <td>{{ \Carbon\Carbon::parse($o->fecha)->format('M d') }}</td>
-
                         <td>{{ $o->cliente->nombre }} {{ $o->cliente->apellido }}</td>
-
                         <td>
                             @php
                             $color = [
@@ -103,29 +115,23 @@
                             'cancelada' => 'danger'
                             ][$o->estado] ?? 'secondary';
                             @endphp
-
                             <span class="badge bg-{{ $color }}">
                                 {{ ucfirst($o->estado) }}
                             </span>
                         </td>
-
                         <td class="text-end">
-
                             <a href="{{ route('ordenes.edit', $o->orden_id) }}"
                                 class="btn btn-outline-primary btn-sm">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
-
                             <button class="btn btn-outline-danger btn-sm"
                                 onclick="abrirModalEliminar({{ $o->orden_id }})">
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
-
                         </td>
                     </tr>
                     @endforeach
                 </tbody>
-
             </table>
 
         </div>

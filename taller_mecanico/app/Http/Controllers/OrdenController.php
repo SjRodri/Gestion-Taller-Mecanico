@@ -11,13 +11,13 @@ use Illuminate\Http\Request;
 class OrdenController extends Controller
 {
     // LISTADO
-     public function index(Request $request)
+    public function index(Request $request)
     {
         $buscar = $request->input('buscar');
         $estado = $request->input('estado');
-        $fecha  = $request->input('fecha'); // <-- FILTRO NUEVO
-        $taller_id = $request->input('taller_id'); // <-- FILTRO NUEVO
-        $vehiculo_id = $request->input('vehiculo_id'); // <-- FILTRO NUEVO
+        $fecha  = $request->input('fecha');
+        $taller_id = $request->input('taller_id');
+        $vehiculo_id = $request->input('vehiculo_id');
 
         $talleres = Taller::all();
         $vehiculos = Vehiculo::all();
@@ -25,7 +25,7 @@ class OrdenController extends Controller
         $ordenes = Orden::query()
             ->when($buscar, function ($q) use ($buscar) {
                 $q->where('descripcion_orden', 'LIKE', "%$buscar%")
-                  ->orWhere('orden_id', 'LIKE', "%$buscar%");
+                    ->orWhere('orden_id', 'LIKE', "%$buscar%");
             })
             ->when($estado, function ($q) use ($estado) {
                 $q->where('estado', $estado);
@@ -62,21 +62,22 @@ class OrdenController extends Controller
         $request->validate([
             'descripcion_orden' => 'required',
             'cliente_id' => 'required',
-            'fecha' => 'required|date|before_or_equal:today',
+            'fecha' => 'required|date|after_or_equal:today',
             'taller_id' => 'required'
         ]);
 
-        // 🛑 VALIDACIÓN MAX 8 ÓRDENES ACTIVAS POR TALLER
-        $ordenesActivas = Orden::where('taller_id', $request->taller_id)
-            ->where('estado', 'activa')
+        // Validación: máximo 100 órdenes por taller y fecha
+        $ordenesPorTallerYFecha = Orden::where('taller_id', $request->taller_id)
+            ->whereDate('fecha', $request->fecha)
+            ->whereIn('estado', ['activa', 'espera', 'finalizada'])
             ->count();
 
-        if ($ordenesActivas >= 8) {
-            return back()
-                ->withErrors(['taller_id' => 'Este taller ya tiene 8 órdenes activas.'])
-                ->withInput();
+        if ($ordenesPorTallerYFecha >= 100) {
+            return redirect()->route('ordenes.index')
+                ->with('error', 'Este taller ya alcanzó el límite de 100 órdenes para esta fecha.');
         }
 
+        // Crear orden
         Orden::create([
             'descripcion_orden' => $request->descripcion_orden,
             'cliente_id' => $request->cliente_id,
@@ -108,28 +109,14 @@ class OrdenController extends Controller
         $request->validate([
             'descripcion_orden' => 'required',
             'cliente_id' => 'required',
-            'fecha' => 'required|date|before_or_equal:today',
+            'fecha' => 'required|date|after_or_equal:today',
             'estado' => 'required',
             'taller_id' => 'required'
         ]);
 
         $orden = Orden::findOrFail($id);
 
-        // 🛑 VALIDACIÓN MAX 8 ÓRDENES ACTIVAS POR TALLER (solo si sigue activa)
-        if ($request->estado === 'activa') {
-
-            $ordenesActivas = Orden::where('taller_id', $request->taller_id)
-                ->where('estado', 'activa')
-                ->where('orden_id', '!=', $id)
-                ->count();
-
-            if ($ordenesActivas >= 8) {
-                return back()
-                    ->withErrors(['taller_id' => 'Este taller ya tiene 8 órdenes activas.'])
-                    ->withInput();
-            }
-        }
-
+        // Actualizar orden
         $orden->update([
             'descripcion_orden' => $request->descripcion_orden,
             'cliente_id' => $request->cliente_id,
