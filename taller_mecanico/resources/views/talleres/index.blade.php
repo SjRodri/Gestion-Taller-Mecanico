@@ -25,7 +25,7 @@
                 value="{{ $buscar }}">
         </div>
 
-        {{-- ⭐ SELECT NUEVO: FILTRAR POR NOMBRE EXACTO --}}
+        {{SELECT NUEVO: FILTRAR POR NOMBRE EXACTO --}}
         <select name="nombre_select" class="form-select">
             <option value="">Nombre</option>
             @foreach($nombresTalleres as $item)

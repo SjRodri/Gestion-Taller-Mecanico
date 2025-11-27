@@ -20,6 +20,32 @@
                     placeholder="Buscar orden...">
             </div>
 
+            {{-- SELECT TALLER --}}
+            <select name="taller_id" class="form-select">
+                <option value="">Taller</option>
+                @foreach ($talleres as $t)
+                <option value="{{ $t->taller_id }}"
+                    {{ request('taller_id') == $t->taller_id ? 'selected' : '' }}>
+                    {{ $t->nombre }}
+                </option>
+                @endforeach
+            </select>
+
+            {{-- SELECT VEHÍCULO --}}
+            <select name="vehiculo_id" class="form-select">
+                <option value="">Vehículo</option>
+                @foreach ($vehiculos as $v)
+                <option value="{{ $v->vehiculo_id }}"
+                    {{ request('vehiculo_id') == $v->vehiculo_id ? 'selected' : '' }}>
+                    {{ $v->modelo }}
+                </option>
+                @endforeach
+            </select>
+            <!-- FILTRO POR FECHA -->
+            <input type="date" name="fecha" class="form-control" value="{{ request('fecha') }}">
+
+
+
             <select name="estado" class="form-select">
                 <option value="">Estado</option>
                 <option value="activa" {{ request('estado')=='activa'?'selected':'' }}>Activas</option>
@@ -146,7 +172,6 @@
     </div>
 </div>
 
-<!-- BOOTSTRAP JS PARA MODALES -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
