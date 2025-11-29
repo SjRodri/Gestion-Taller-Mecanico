@@ -76,6 +76,7 @@ CREATE TABLE ordenes (
 CREATE TABLE reportes_ventas (
     reporte_id INT AUTO_INCREMENT PRIMARY KEY,
     fecha DATE DEFAULT (CURRENT_DATE()),
+    descripcion_reporte VARCHAR(255) NOT NULL,
     total DECIMAL(12,2),
     clientes_nuevos INT,
     repuestos_ordenados INT,
