@@ -136,6 +136,7 @@ VALUES
 SELECT * FROM gestion_de_talleres.usuarios;--
 INSERT INTO usuarios (email, password_hash, rol, cliente_id, empleado_id, activo)
 VALUES
+('admin@taller.com', 'admin123', 'admin', NULL, NULL, 1);
 ('carlos.ramirez@example.com', '123456', 'cliente', 1, NULL, 1),
 ('maria.lopez@example.com', '123456', 'cliente', 2, NULL, 1),
 ('jose.martinez@example.com', '123456', 'cliente', 3, NULL, 1),
@@ -151,5 +152,4 @@ VALUES
 ('hector.valle@taller.com', '1234567', 'Empleado', NULL, 48, 1),
 ('karen.fuentes@taller.com', '1234567', 'Empleado', NULL, 49, 1),
 
-('admin@taller.com', 'admin123', 'admin', NULL, NULL, 1);
 

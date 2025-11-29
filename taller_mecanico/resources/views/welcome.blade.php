@@ -1,210 +1,88 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página principal Administrador</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f6f6f6;
-        }
+@section('title', 'Inicio')
+@section('page-title', 'Bienvenido, ' . ucfirst(auth()->user()->rol))
 
-        /* --- Barra lateral --- */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 220px;
-            height: 100vh;
-            background-color: #222;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+@section('content')
 
-        .sidebar h2 {
-            text-align: center;
-            font-size: 18px;
-            padding: 15px 0;
-            background-color: #111;
-            margin: 0;
-        }
+@if(auth()->user()->rol == 'admin')
+<div class="col-md-4 mb-3">
+    <a href="{{ route('clientes.index') }}" class="text-decoration-none text-dark">
+        <div class="card p-4 text-center">Clientes atendidos</div>
+    </a>
+</div>
 
-        .sidebar .perfil {
-            text-align: center;
-            padding: 15px;
-        }
+<div class="col-md-4 mb-3">
+    <a href="{{ route('ordenes.index') }}" class="text-decoration-none text-dark">
+        <div class="card p-4 text-center">Estado de órdenes</div>
+    </a>
+</div>
 
-        .sidebar .perfil .foto {
-            width: 60px;
-            height: 60px;
-            background-color: #444;
-            border-radius: 50%;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
+<div class="col-md-4 mb-3">
+    <a href="{{ route('ingresos.index') }}" class="text-decoration-none text-dark">
+        <div class="card p-4 text-center">Ingresos Mensuales</div>
+    </a>
+</div>
 
-        .sidebar .perfil p {
-            font-size: 13px;
-            margin: 4px 0;
-        }
+<div class="col-md-4 mb-3">
+    <a href="{{ route('repuestos.index') }}" class="text-decoration-none text-dark">
+        <div class="card p-4 text-center">Repuestos con bajo stock</div>
+    </a>
+</div>
 
-        .nav-links {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+<div class="col-md-4 mb-3">
+    <a href="{{ route('ordenes.create') }}" class="text-decoration-none text-dark">
+        <div class="card p-4 text-center">Próximas citas</div>
+    </a>
+</div>
 
-        .nav-links li {
-            border-top: 1px solid #333;
-        }
+<div class="col-md-4 mb-3">
+    <a href="/mapa" class="text-decoration-none text-dark">
+        <div class="card p-4 text-center">Mapa de sucursales</div>
+    </a>
+</div>
+@endif
 
-        .nav-links a {
-            display: block;
-            padding: 10px 20px;
-            text-decoration: none;
-            color: #fff;
-        }
+@if(auth()->user()->rol == 'empleado')
+<div class="col-md-4 mb-3">
+    <a href="{{ route('repuestos.index') }}" class="text-decoration-none text-dark">
+        <div class="card p-4 text-center">Repuestos con bajo stock</div>
+    </a>
+</div>
 
-        .nav-links a:hover,
-        .nav-links .active {
-            background-color: #444;
-        }
+<div class="col-md-4 mb-3">
+    <a href="{{ route('ordenes.index') }}" class="text-decoration-none text-dark">
+        <div class="card p-4 text-center">Órdenes finalizadas</div>
+    </a>
+</div>
 
-        .logout {
-            padding: 15px;
-            text-align: center;
-            border-top: 1px solid #333;
-        }
+<div class="col-md-4 mb-3">
+    <a href="{{ route('ordenes.index') }}" class="text-decoration-none text-dark">
+        <div class="card p-4 text-center">Próximas citas</div>
+    </a>
+</div>
+@endif
 
-        .logout a {
-            color: #fff;
-            text-decoration: none;
-        }
+@if(auth()->user()->rol == 'cliente')
+<div class="col-md-4 mb-3">
+    <a href="{{ route('ordenes.create') }}" class="text-decoration-none text-dark">
+        <div class="card p-4 text-center">Programar cita</div>
+    </a>
+</div>
 
-        /* --- Contenido principal --- */
-        .main-content {
-            margin-left: 220px;
-            padding: 20px;
-        }
+<div class="col-md-4 mb-3">
+    <a href="{{ route('ordenes.index') }}" class="text-decoration-none text-dark">
+        <div class="card p-4 text-center">Mis citas</div>
+    </a>
+</div>
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+<div class="col-md-4 mb-3">
+    <a href="/mapa" class="text-decoration-none text-dark">
+        <div class="card p-4 text-center">Mapa de talleres</div>
+    </a>
+</div>
+@endif
 
-        .header h1 {
-            font-size: 22px;
-            margin: 0;
-        }
+</div>
 
-        .header .fecha {
-            font-size: 12px;
-            color: #777;
-        }
-
-        /* --- Tarjetas --- */
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .card {
-            background-color: #ddd;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .card:hover {
-            background-color: #ccc;
-        }
-
-        .card-icon {
-            font-size: 36px;
-            margin-bottom: 10px;
-            display: block;
-        }
-    </style>
-</head>
-
-<body>
-
-    <div class="sidebar">
-        <div>
-            <h2>Gestión de Talleres 🚗</h2>
-
-            <div class="perfil">
-                <div class="foto"></div>
-                <p><strong>Sayd Josue Rodríguez M.</strong></p>
-                <p>example@gmail.com</p>
-            </div>
-
-            <ul class="nav-links">
-                <li><a href="#" class="active">🏠 Inicio</a></li>
-                <li><a href="{{ url('/clientes') }}">👥 Clientes</a></li>
-                <li><a href="#">🧰 Gestión de Talleres</a></li>
-                <li><a href="#">👨‍🔧 Empleados</a></li>
-                <li><a href="#">📊 Reportes</a></li>
-                <li><a href="#">🔧 Repuestos</a></li>
-                <li><a href="#">⚙️ Configuración</a></li>
-            </ul>
-        </div>
-
-        <div class="logout">
-            <a href="{{ url('/login') }}">🚪 Cerrar Sesión</a>
-        </div>
-    </div>
-
-    <div class="main-content">
-        <div class="header">
-            <h1>Bienvenido otra vez, Sayd Admin.</h1>
-            <p class="fecha">Fecha y hora actual</p>
-        </div>
-
-        <div class="cards">
-            <div class="card">
-                <span class="card-icon">👥</span>
-                <p>Clientes atendidos este mes</p>
-            </div>
-
-            <div class="card">
-                <span class="card-icon">✔️</span>
-                <p>Estado de Órdenes</p>
-            </div>
-
-            <div class="card">
-                <span class="card-icon">💲</span>
-                <p>Ingresos Mensuales</p>
-            </div>
-
-            <div class="card">
-                <span class="card-icon">⚠️</span>
-                <p>Repuestos con bajo stock</p>
-            </div>
-
-            <div class="card">
-                <span class="card-icon">🕒</span>
-                <p>Próximas citas</p>
-            </div>
-
-            <div class="card">
-                <span class="card-icon">📍</span>
-                <a href="{{ url('/mapa') }}">Mapa de Sucursales</a>
-
-            </div>
-        </div>
-    </div>
-
-</body>
-
-</html>
+@endsection

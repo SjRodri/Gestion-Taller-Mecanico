@@ -31,10 +31,6 @@
             color: #212529;
         }
 
-        .form-control::placeholder {
-            color: #6c757d;
-        }
-
         .btn-login {
             background-color: #007bff;
             color: white;
@@ -63,64 +59,44 @@
             color: #007bff;
             font-size: 0.9rem;
         }
-
-        .social-btn {
-            width: 45px;
-            height: 45px;
-            border: 2px solid #007bff;
-            background-color: white;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s ease-in-out;
-        }
-
-        .social-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .social-btn img {
-            width: 22px;
-            height: 22px;
-        }
     </style>
 </head>
 
 <body>
     <div class="card">
+
         <h3 class="text-center mb-4">Iniciar Sesión</h3>
-        <form>
+
+        {{-- Mensajes flash --}}
+        @if(session('error'))
+        <div class="alert alert-danger text-center">{{ session('error') }}</div>
+        @endif
+
+        @if(session('success'))
+        <div class="alert alert-success text-center">{{ session('success') }}</div>
+        @endif
+
+        <form action="{{ route('login.post') }}" method="POST">
+            @csrf
+
             <div class="mb-3">
                 <label for="email" class="form-label">Correo</label>
-                <input type="email" class="form-control" id="email" placeholder="ejemplo@correo.com">
+                <input type="email" name="email" class="form-control" id="email"
+                    placeholder="ejemplo@correo.com" required>
             </div>
+
             <div class="mb-3">
                 <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" placeholder="********">
+                <input type="password" name="password" class="form-control" id="password"
+                    placeholder="********" required>
             </div>
-            <div class="mb-3 text-end">
-                <a href="#" class="link text-decoration-none">Olvidaste tu Contraseña click aquí</a>
-            </div>
+
             <div class="d-grid gap-2 mb-3">
                 <button type="submit" class="btn btn-login">Ingresar</button>
-                <a href="{{ route('registro') }}" class="btn btn-regresar text-center">Registrarse</a>
-            </div>
-            <div class="text-center mt-3">
-                <p class="fw-semibold mb-3">o inicia sesión con:</p>
-                <div class="d-flex justify-content-center gap-3">
-                    <button type="button" class="social-btn">
-                        <img src="/images/gmail-icon.png" alt="Gmail">
-                    </button>
-                    <button type="button" class="social-btn">
-                        <img src="/images/facebook-icon.png" alt="Facebook">
-                    </button>
-                    <button type="button" class="social-btn">
-                        <img src="/images/twitter-icon.png" alt="Twitter">
-                    </button>
-                </div>
+                <a href="{{ url('registro') }}" class="btn btn-regresar text-center">Registrarse</a>
             </div>
         </form>
+
     </div>
 </body>
 

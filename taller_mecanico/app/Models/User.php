@@ -2,47 +2,64 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    // Tabla real en la BD
+    protected $table = 'usuarios';
+
+    // Primary Key
+    protected $primaryKey = 'usuario_id';
+
+    // Si tu tabla NO tiene columnas created_at / updated_at
+    public $timestamps = false;
+
+    // Campos asignables
     protected $fillable = [
-        'name',
         'email',
-        'password',
+        'password_hash',
+        'rol',
+        'cliente_id',
+        'empleado_id',
+        'activo',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
+    // Ocultar atributos sensibles
     protected $hidden = [
-        'password',
+        'password_hash',
         'remember_token',
     ];
 
+    // public function empleado()
+    // {
+    //     return $this->belongsTo(Empleado::class, 'empleado_id');
+    // }
+    // public function cliente()
+    // {
+    //     return $this->belongsTo(Cliente::class, 'cliente_id');
+    // }
+
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * 🔐 Método requerido por Laravel para saber qué campo es la contraseña.
+     * Retorna password_hash en lugar de password.
+     */
+    public function getAuthPassword()
+    {
+        return $this->password_hash;
+    }
+
+    /**
+     * ⚙️ Casting de atributos
      */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
         ];
     }
 }

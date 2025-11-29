@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +16,6 @@
             font-family: Arial, sans-serif;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 250px;
             height: 100vh;
@@ -26,10 +26,12 @@
             left: 0;
             padding-top: 20px;
         }
+
         .sidebar .profile {
             text-align: center;
             margin-bottom: 20px;
         }
+
         .profile .avatar {
             width: 60px;
             height: 60px;
@@ -42,6 +44,7 @@
             justify-content: center;
             align-items: center;
         }
+
         .sidebar a {
             display: block;
             padding: 12px 25px;
@@ -49,6 +52,7 @@
             text-decoration: none;
             font-size: 15px;
         }
+
         .sidebar .title {
             font-size: 14px;
             font-weight: bold;
@@ -57,13 +61,13 @@
             padding: 10px 25px;
             margin-top: 15px;
         }
+
         .sidebar a:hover,
         .sidebar a.active {
             background: #333;
             color: #ffffff;
         }
 
-        /* Main panel */
         .main-content {
             margin-left: 250px;
             padding: 25px;
@@ -75,65 +79,77 @@
             color: #2a2a2a;
             margin-bottom: 20px;
         }
+
+        .hover-card:hover {
+            background: #f0f0f0;
+            transform: scale(1.02);
+            transition: 0.2s;
+        }
     </style>
 </head>
+
 <body>
 
     <!-- SIDEBAR -->
     <div class="sidebar">
+
         <div class="profile">
-            <div class="avatar">S</div>
-            <p style="font-size:14px; margin:5px 0; font-weight:bold;">example</p>
-            <p style="font-size:12px; color:#bbbbbb;">example@gmail.com</p>
+            <div class="avatar">
+                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+            </div>
+
+            <p style="font-size:14px; margin:5px 0; font-weight:bold;">
+                {{ auth()->user()->name }}
+            </p>
+
+            <p style="font-size:12px; color:#bbbbbb;">
+                {{ auth()->user()->email }}
+            </p>
         </div>
 
         <div class="title">Navegación Principal</div>
-        <a href="#"><i class="fa-solid fa-house me-2"></i> Inicio</a>
+
+        <!-- MENU SEGÚN ROL -->
+
+        <a href="/home"><i class="fa-solid fa-house me-2"></i> Inicio</a>
+
+        @if(auth()->user()->rol == 'admin')
         <a href="/clientes"><i class="fa-solid fa-user me-2"></i> Clientes</a>
-        <a href="#"><i class="fa-solid fa-warehouse me-2"></i> Gestión de Talleres</a>
-        <a href="/empleados" class="active"><i class="fa-solid fa-users me-2"></i> Empleados</a>
+        <a href="#"><i class="fa-solid fa-warehouse me-2"></i> Talleres</a>
+        <a href="/empleados"><i class="fa-solid fa-users me-2"></i> Empleados</a>
         <a href="#"><i class="fa-solid fa-chart-pie me-2"></i> Reportes</a>
-        <a href="#"><i class="fa-solid fa-gear me-2"></i> Configuración</a>
+        <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Mapa</a>
+        @endif
+
+        @if(auth()->user()->rol == 'empleado')
+        <a href="#"><i class="fa-solid fa-box me-2"></i> Repuestos</a>
+        <a href="#"><i class="fa-solid fa-list me-2"></i> Órdenes</a>
+        <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Mapa</a>
+        @endif
+
+        @if(auth()->user()->rol == 'cliente')
+        <a href="#"><i class="fa-solid fa-calendar me-2"></i> Citas</a>
+        <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Talleres</a>
+        @endif
+
+        <form action="{{ route('logout') }}" method="POST" class="mt-4">
+            @csrf
+            <button class="btn btn-danger w-100">
+                <i class="fa-solid fa-door-open me-2"></i> Cerrar sesión
+            </button>
+        </form>
+
     </div>
 
     <!-- CONTENIDO -->
     <div class="main-content">
+
         <div class="page-header">@yield('page-title')</div>
 
-        <!-- Controles: Solo se muestran en INDEX -->
-        @if (request()->routeIs('empleados.index'))
-            <div class="d-flex justify-content-between align-items-center mb-3">
-
-                <form method="GET" action="{{ route('empleados.index') }}" class="d-flex gap-2">
-
-                    <input type="text" name="buscar" value="{{ request('buscar') }}"
-                        class="form-control" placeholder="Buscar empleado...">
-
-                    <select name="rol" class="form-select">
-                        <option value="">Rol</option>
-                        <option value="Administrador" {{ request('rol') == 'Administrador' ? 'selected' : '' }}>Administrador</option>
-                        <option value="Mecánico" {{ request('rol') == 'Mecánico' ? 'selected' : '' }}>Mecánico</option>
-                        <option value="Recepción" {{ request('rol') == 'Recepción' ? 'selected' : '' }}>Recepción</option>
-                    </select>
-
-                    <select name="activo" class="form-select">
-                        <option value="">Activo</option>
-                        <option value="1" {{ request('activo') === '1' ? 'selected' : '' }}>Sí</option>
-                        <option value="0" {{ request('activo') === '0' ? 'selected' : '' }}>No</option>
-                    </select>
-
-                    <button class="btn btn-outline-secondary"><i class="fa-solid fa-filter"></i></button>
-                </form>
-
-                <button class="btn btn-outline-success"
-                    onclick="window.location='{{ route('empleados.create') }}'">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-            </div>
-        @endif
-
         @yield('content')
+
     </div>
 
 </body>
+
 </html>

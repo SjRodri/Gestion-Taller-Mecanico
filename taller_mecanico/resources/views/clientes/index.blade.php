@@ -15,7 +15,7 @@
         <p>Sayd Josue Rodríguez M.<br>example@gmail.com</p>
 
         <nav>
-            <a href="{{ url('/') }}">🏠 Inicio</a>
+            <a href="{{ url('dashboard') }}">🏠 Inicio</a>
             <a href="#" style="background-color:#444;">👥 Clientes</a>
             <a href="#">🏭 Gestión de Talleres</a>
             <a href="#">🧑‍🔧 Empleados</a>
