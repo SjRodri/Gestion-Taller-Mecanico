@@ -16,7 +16,7 @@ class Taller extends Model
         'telefono',
         'email',
         'horario',
-        'latitud',
-        'longitud'
+        'latitude',
+        'longitude'
     ];
 }

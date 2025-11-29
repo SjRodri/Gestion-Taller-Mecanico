@@ -16,6 +16,7 @@
             font-family: Arial, sans-serif;
         }
 
+        /* Sidebar */
         .sidebar {
             width: 250px;
             height: 100vh;
@@ -68,6 +69,7 @@
             color: #ffffff;
         }
 
+        /* Main panel */
         .main-content {
             margin-left: 250px;
             padding: 25px;
@@ -79,12 +81,6 @@
             color: #2a2a2a;
             margin-bottom: 20px;
         }
-
-        .hover-card:hover {
-            background: #f0f0f0;
-            transform: scale(1.02);
-            transition: 0.2s;
-        }
     </style>
 </head>
 
@@ -92,62 +88,81 @@
 
     <!-- SIDEBAR -->
     <div class="sidebar">
-
         <div class="profile">
-            <div class="avatar">
-                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-            </div>
-
-            <p style="font-size:14px; margin:5px 0; font-weight:bold;">
-                {{ auth()->user()->name }}
-            </p>
-
-            <p style="font-size:12px; color:#bbbbbb;">
-                {{ auth()->user()->email }}
-            </p>
+            <div class="avatar">S</div>
+            <p style="font-size:14px; margin:5px 0; font-weight:bold;">example</p>
+            <p style="font-size:12px; color:#bbbbbb;">example@gmail.com</p>
         </div>
 
         <div class="title">Navegación Principal</div>
-
-        <!-- MENU SEGÚN ROL -->
-
-        <a href="/home"><i class="fa-solid fa-house me-2"></i> Inicio</a>
-
-        @if(auth()->user()->rol == 'admin')
+        <a href="#"><i class="fa-solid fa-house me-2"></i> Inicio</a>
         <a href="/clientes"><i class="fa-solid fa-user me-2"></i> Clientes</a>
-        <a href="#"><i class="fa-solid fa-warehouse me-2"></i> Talleres</a>
-        <a href="/empleados"><i class="fa-solid fa-users me-2"></i> Empleados</a>
+        <a href="#"><i class="fa-solid fa-warehouse me-2"></i> Gestión de Talleres</a>
+        <a href="/empleados" class="active"><i class="fa-solid fa-users me-2"></i> Empleados</a>
         <a href="#"><i class="fa-solid fa-chart-pie me-2"></i> Reportes</a>
-        <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Mapa</a>
-        @endif
-
-        @if(auth()->user()->rol == 'empleado')
-        <a href="#"><i class="fa-solid fa-box me-2"></i> Repuestos</a>
-        <a href="#"><i class="fa-solid fa-list me-2"></i> Órdenes</a>
-        <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Mapa</a>
-        @endif
-
-        @if(auth()->user()->rol == 'cliente')
-        <a href="#"><i class="fa-solid fa-calendar me-2"></i> Citas</a>
-        <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Talleres</a>
-        @endif
-
-        <form action="{{ route('logout') }}" method="POST" class="mt-4">
-            @csrf
-            <button class="btn btn-danger w-100">
-                <i class="fa-solid fa-door-open me-2"></i> Cerrar sesión
-            </button>
-        </form>
-
+        <a href="#"><i class="fa-solid fa-gear me-2"></i> Configuración</a>
     </div>
 
     <!-- CONTENIDO -->
     <div class="main-content">
-
         <div class="page-header">@yield('page-title')</div>
 
-        @yield('content')
+        <!-- Controles: Solo se muestran en INDEX -->
+        @if (request()->routeIs('empleados.index'))
+        <div class="d-flex justify-content-between align-items-center mb-3">
 
+            <!-- FORMULARIO DE FILTROS -->
+            <form method="GET" action="{{ route('empleados.index') }}" class="d-flex gap-2">
+
+                <!-- Buscador general -->
+                <input type="text" name="buscar" value="{{ request('buscar') }}"
+                    class="form-control" placeholder="Buscar empleado...">
+
+                <!-- Filtro por rol -->
+                <select name="rol" class="form-select">
+                    <option value="">Rol</option>
+                    <option value="Administrador" {{ request('rol') == 'Administrador' ? 'selected' : '' }}>Administrador</option>
+                    <option value="Mecánico General" {{ request('rol') == 'Mecánico General' ? 'selected' : '' }}>Mecánico General</option>
+                    <option value="Recepcionista" {{ request('rol') == 'Recepcionista' ? 'selected' : '' }}>Recepcionista</option>
+                    <option value="Electricista Automotriz" {{ request('rol') == 'Electricista Automotriz' ? 'selected' : '' }}>Electricista Automotriz</option>
+                    <option value="Pintor Automotriz" {{ request('rol') == 'Pintor Automotriz' ? 'selected' : '' }}>Pintor Automotriz</option>
+                    <option value="Asistente de Taller" {{ request('rol') == 'Asistente de Taller' ? 'selected' : '' }}>Asistente de Taller</option>
+                    <option value="Técnico en Diagnóstico" {{ request('rol') == 'Técnico en Diagnóstico' ? 'selected' : '' }}>Técnico en Diagnóstico</option>
+                    <option value="Contador" {{ request('rol') == 'Contador' ? 'selected' : '' }}>Contador</option>
+                    <option value="Mecánico Diesel" {{ request('rol') == 'Mecánico Diesel' ? 'selected' : '' }}>Mecánico Diesel</option>
+                </select>
+
+                <!-- Filtro por activo -->
+                <select name="activo" class="form-select">
+                    <option value="">Activo</option>
+                    <option value="1" {{ request('activo') === '1' ? 'selected' : '' }}>Sí</option>
+                    <option value="0" {{ request('activo') === '0' ? 'selected' : '' }}>No</option>
+                </select>
+
+                <!-- Filtro por taller -->
+                <select name="taller" class="form-select">
+                    <option value="">Taller</option>
+                    @foreach ($talleres as $t)
+                    <option value="{{ $t->taller_id }}" {{ request('taller') == $t->taller_id ? 'selected' : '' }}>
+                        {{ $t->nombre }}
+                    </option>
+                    @endforeach
+                </select>
+
+                <!-- Botón filtrar -->
+                <button class="btn btn-outline-secondary"><i class="fa-solid fa-filter"></i></button>
+            </form>
+
+            <!-- Botón de crear -->
+            <button class="btn btn-outline-success"
+                onclick="window.location='{{ route('empleados.create') }}'">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+
+        </div>
+        @endif
+
+        @yield('content')
     </div>
 
 </body>

@@ -1,88 +1,98 @@
-@extends('layouts.app')
+@extends('layouts.panel')
 
 @section('title', 'Inicio')
 @section('page-title', 'Bienvenido, ' . ucfirst(auth()->user()->rol))
 
 @section('content')
 
-@if(auth()->user()->rol == 'admin')
-<div class="col-md-4 mb-3">
-    <a href="{{ route('clientes.index') }}" class="text-decoration-none text-dark">
-        <div class="card p-4 text-center">Clientes atendidos</div>
-    </a>
-</div>
+<div class="row g-3">
 
-<div class="col-md-4 mb-3">
-    <a href="{{ route('ordenes.index') }}" class="text-decoration-none text-dark">
-        <div class="card p-4 text-center">Estado de órdenes</div>
-    </a>
-</div>
+    @if(auth()->user()->rol == 'admin')
+    <div class="col-md-4 mb-3">
+        <a href="{{ route('clientes.index') }}" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center hover-card">Clientes atendidos</div>
+        </a>
+    </div>
 
-<div class="col-md-4 mb-3">
-    <a href="{{ route('ingresos.index') }}" class="text-decoration-none text-dark">
+    <div class="col-md-4 mb-3">
+        <a href="{{ route('ordenes.index') }}" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center hover-card">Estado de órdenes</div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
         <div class="card p-4 text-center">Ingresos Mensuales</div>
-    </a>
-</div>
+    </div>
 
-<div class="col-md-4 mb-3">
-    <a href="{{ route('repuestos.index') }}" class="text-decoration-none text-dark">
+    <div class="col-md-4 mb-3">
         <div class="card p-4 text-center">Repuestos con bajo stock</div>
-    </a>
-</div>
+    </div>
 
-<div class="col-md-4 mb-3">
-    <a href="{{ route('ordenes.create') }}" class="text-decoration-none text-dark">
-        <div class="card p-4 text-center">Próximas citas</div>
-    </a>
-</div>
+    <div class="col-md-4 mb-3">
+        <a href="{{ route('ordenes.create') }}" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center hover-card">Próximas citas</div>
+        </a>
+    </div>
 
-<div class="col-md-4 mb-3">
-    <a href="/mapa" class="text-decoration-none text-dark">
-        <div class="card p-4 text-center">Mapa de sucursales</div>
-    </a>
-</div>
-@endif
+    <div class="col-md-4 mb-3">
+        <a href="{{ url('/mapa') }}" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center hover-card">Mapa de sucursales</div>
+        </a>
+    </div>
+    @endif
 
-@if(auth()->user()->rol == 'empleado')
-<div class="col-md-4 mb-3">
-    <a href="{{ route('repuestos.index') }}" class="text-decoration-none text-dark">
+    @if(auth()->user()->rol == 'empleado')
+    <div class="col-md-4 mb-3">
         <div class="card p-4 text-center">Repuestos con bajo stock</div>
-    </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <a href="{{ route('ordenes.index') }}" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center hover-card">Órdenes finalizadas</div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <a href="{{ route('ordenes.index') }}" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center hover-card">Próximas citas</div>
+        </a>
+    </div>
+    @endif
+
+    @if(auth()->user()->rol == 'cliente')
+    <div class="col-md-4 mb-3">
+        <a href="{{ route('ordenes.create') }}" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center hover-card">Programar cita</div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <a href="{{ route('ordenes.index') }}" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center hover-card">Mis citas</div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <a href="{{ url('/mapa') }}" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center hover-card">Mapa de talleres</div>
+        </a>
+    </div>
+    @endif
+
 </div>
 
-<div class="col-md-4 mb-3">
-    <a href="{{ route('ordenes.index') }}" class="text-decoration-none text-dark">
-        <div class="card p-4 text-center">Órdenes finalizadas</div>
-    </a>
-</div>
+{{-- Pequeño estilo local para efecto hover (si no lo tiene en su CSS global) --}}
+@push('styles')
+<style>
+    .hover-card {
+        transition: transform .15s ease, box-shadow .15s ease;
+    }
 
-<div class="col-md-4 mb-3">
-    <a href="{{ route('ordenes.index') }}" class="text-decoration-none text-dark">
-        <div class="card p-4 text-center">Próximas citas</div>
-    </a>
-</div>
-@endif
-
-@if(auth()->user()->rol == 'cliente')
-<div class="col-md-4 mb-3">
-    <a href="{{ route('ordenes.create') }}" class="text-decoration-none text-dark">
-        <div class="card p-4 text-center">Programar cita</div>
-    </a>
-</div>
-
-<div class="col-md-4 mb-3">
-    <a href="{{ route('ordenes.index') }}" class="text-decoration-none text-dark">
-        <div class="card p-4 text-center">Mis citas</div>
-    </a>
-</div>
-
-<div class="col-md-4 mb-3">
-    <a href="/mapa" class="text-decoration-none text-dark">
-        <div class="card p-4 text-center">Mapa de talleres</div>
-    </a>
-</div>
-@endif
-
-</div>
+    .hover-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+</style>
+@endpush
 
 @endsection

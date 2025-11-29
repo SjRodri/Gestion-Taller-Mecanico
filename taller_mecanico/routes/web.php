@@ -8,14 +8,15 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrdenController;
+use App\Http\Controllers\TallerController;
 
 /*
 |--------------------------------------------------------------------------
 | Página raíz → Login
 |--------------------------------------------------------------------------
 |
-| Cuando el usuario entra a http://127.0.0.1:8000 debe ver el login. 
-| Aquí redirigimos a la ruta login (controlador).
+| Cuando el usuario entra a http://127.0.0.1:8000 debe ver el login.
 |
 */
 
@@ -36,6 +37,12 @@ Route::post('/registro', [RegistroController::class, 'registrar'])->name('regist
 Route::resource('clientes', ClienteController::class)->middleware('auth');
 Route::resource('empleados', EmpleadoController::class)->middleware('auth');
 
+// ---------------- ORDENES ----------------
+Route::resource('ordenes', OrdenController::class)->middleware('auth');
+
+// ---------------- TALLERES ----------------
+Route::resource('talleres', TallerController::class)->middleware('auth');
+
 // ---------------- MAPA ----------------
 Route::get('/mapa', [MapController::class, 'index'])->middleware('auth')->name('mapa.index');
 Route::get('/api/talleres', [MapController::class, 'talleresJson']);
@@ -45,7 +52,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 });
 
-// Ruta opcional por si algo lo usa
+// Ruta opcional si algo usa /home
 Route::get('/home', function () {
     return redirect()->route('dashboard');
 })->middleware('auth')->name('home');
