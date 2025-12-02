@@ -21,12 +21,20 @@ class Empleado extends Model
         'fecha_ingreso',
         'activo'
     ];
+
     public function getRouteKeyName()
     {
         return 'empleado_id';
     }
+
     public function taller()
     {
         return $this->belongsTo(Taller::class, 'taller_id', 'taller_id');
+    }
+
+    // 🔥 Relación agregada (LO NECESITAS para inactivar usuario al inactivar empleado)
+    public function usuario()
+    {
+        return $this->hasOne(Usuario::class, 'empleado_id', 'empleado_id');
     }
 }

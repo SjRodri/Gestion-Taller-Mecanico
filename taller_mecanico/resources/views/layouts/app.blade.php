@@ -16,7 +16,6 @@
             font-family: Arial, sans-serif;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 250px;
             height: 100vh;
@@ -69,7 +68,6 @@
             color: #ffffff;
         }
 
-        /* Main panel */
         .main-content {
             margin-left: 250px;
             padding: 25px;
@@ -106,61 +104,6 @@
     <!-- CONTENIDO -->
     <div class="main-content">
         <div class="page-header">@yield('page-title')</div>
-
-        <!-- Controles: Solo se muestran en INDEX -->
-        @if (request()->routeIs('empleados.index'))
-        <div class="d-flex justify-content-between align-items-center mb-3">
-
-            <!-- FORMULARIO DE FILTROS -->
-            <form method="GET" action="{{ route('empleados.index') }}" class="d-flex gap-2">
-
-                <!-- Buscador general -->
-                <input type="text" name="buscar" value="{{ request('buscar') }}"
-                    class="form-control" placeholder="Buscar empleado...">
-
-                <!-- Filtro por rol -->
-                <select name="rol" class="form-select">
-                    <option value="">Rol</option>
-                    <option value="Administrador" {{ request('rol') == 'Administrador' ? 'selected' : '' }}>Administrador</option>
-                    <option value="Mecánico General" {{ request('rol') == 'Mecánico General' ? 'selected' : '' }}>Mecánico General</option>
-                    <option value="Recepcionista" {{ request('rol') == 'Recepcionista' ? 'selected' : '' }}>Recepcionista</option>
-                    <option value="Electricista Automotriz" {{ request('rol') == 'Electricista Automotriz' ? 'selected' : '' }}>Electricista Automotriz</option>
-                    <option value="Pintor Automotriz" {{ request('rol') == 'Pintor Automotriz' ? 'selected' : '' }}>Pintor Automotriz</option>
-                    <option value="Asistente de Taller" {{ request('rol') == 'Asistente de Taller' ? 'selected' : '' }}>Asistente de Taller</option>
-                    <option value="Técnico en Diagnóstico" {{ request('rol') == 'Técnico en Diagnóstico' ? 'selected' : '' }}>Técnico en Diagnóstico</option>
-                    <option value="Contador" {{ request('rol') == 'Contador' ? 'selected' : '' }}>Contador</option>
-                    <option value="Mecánico Diesel" {{ request('rol') == 'Mecánico Diesel' ? 'selected' : '' }}>Mecánico Diesel</option>
-                </select>
-
-                <!-- Filtro por activo -->
-                <select name="activo" class="form-select">
-                    <option value="">Activo</option>
-                    <option value="1" {{ request('activo') === '1' ? 'selected' : '' }}>Sí</option>
-                    <option value="0" {{ request('activo') === '0' ? 'selected' : '' }}>No</option>
-                </select>
-
-                <!-- Filtro por taller -->
-                <select name="taller" class="form-select">
-                    <option value="">Taller</option>
-                    @foreach ($talleres as $t)
-                    <option value="{{ $t->taller_id }}" {{ request('taller') == $t->taller_id ? 'selected' : '' }}>
-                        {{ $t->nombre }}
-                    </option>
-                    @endforeach
-                </select>
-
-                <!-- Botón filtrar -->
-                <button class="btn btn-outline-secondary"><i class="fa-solid fa-filter"></i></button>
-            </form>
-
-            <!-- Botón de crear -->
-            <button class="btn btn-outline-success"
-                onclick="window.location='{{ route('empleados.create') }}'">
-                <i class="fa-solid fa-plus"></i>
-            </button>
-
-        </div>
-        @endif
 
         @yield('content')
     </div>

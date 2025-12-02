@@ -8,74 +8,80 @@ use Illuminate\Http\Request;
 
 class EmpleadoController extends Controller
 {
-    // Mostrar lista de empleados con búsqueda, filtros y paginación
-    // LISTA CON FILTROS
-
+    // -----------------------------------------
+    // LISTAR EMPLEADOS + FILTROS
+    // -----------------------------------------
     public function index(Request $request)
     {
-        // Capturamos los parámetros de búsqueda
-        $busqueda = $request->input('buscar');
-        $rol = $request->input('rol');
-        $activo = $request->input('activo');
-        $taller_id = $request->input('taller'); // filtro independiente por taller
+        $query = Empleado::with('taller');
 
-        // Consulta con filtros
-        $empleados = Empleado::with('taller')
-            ->when($busqueda, function ($q) use ($busqueda) {
-                $q->where('nombre', 'LIKE', "%$busqueda%")
-                    ->orWhere('apellido', 'LIKE', "%$busqueda%")
-                    ->orWhere('dni', 'LIKE', "%$busqueda%")
-                    ->orWhere('rol', 'LIKE', "%$busqueda%")
-                    ->orWhere('correo', 'LIKE', "%$busqueda%");
-            })
-            ->when($rol, function ($q) use ($rol) {
-                $q->where('rol', $rol);
-            })
-            ->when($activo !== null && $activo !== '', function ($q) use ($activo) {
-                $q->where('activo', $activo);
-            })
-            ->when($taller_id, function ($q) use ($taller_id) {
-                $q->where('taller_id', $taller_id); // filtro independiente por taller
-            })
-            ->paginate(10)
-            ->appends($request->query());
+        // FILTRO: BUSCAR
+        if ($request->buscar) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nombre', 'LIKE', '%' . $request->buscar . '%')
+                    ->orWhere('apellido', 'LIKE', '%' . $request->buscar . '%')
+                    ->orWhere('dni', 'LIKE', '%' . $request->buscar . '%');
+            });
+        }
 
-        // Obtenemos todos los talleres para el dropdown
+        // FILTRO: ROL
+        if ($request->rol) {
+            $query->where('rol', $request->rol);
+        }
+
+        // FILTRO: ACTIVO
+        if ($request->activo !== null && $request->activo !== "") {
+            $query->where('activo', $request->activo);
+        }
+
+        // FILTRO: TALLER
+        if ($request->taller) {
+            $query->where('taller_id', $request->taller);
+        }
+
+        // ORDEN Y PAGINACIÓN
+        $empleados = $query->orderBy('empleado_id', 'DESC')->paginate(10);
+
+        // CARGA DE TALLERES PARA EL SELECT DEL INDEX
         $talleres = Taller::all();
 
-        return view('empleados.index', compact('empleados', 'busqueda', 'rol', 'activo', 'taller_id', 'talleres'));
+        return view('empleados.index', compact('empleados', 'talleres'));
     }
 
-
+    // -----------------------------------------
     // FORMULARIO CREAR
+    // -----------------------------------------
     public function create()
     {
         $talleres = Taller::all();
         return view('empleados.create', compact('talleres'));
     }
 
-    // GUARDAR
+    // -----------------------------------------
+    // GUARDAR EMPLEADO
+    // -----------------------------------------
     public function store(Request $request)
     {
         $request->validate([
-            'dni' => 'required',
-            'nombre' => 'required',
-            'apellido' => 'required',
-            'telefono' => 'required',
-            'rol' => 'required',
-            'taller_id' => 'required|exists:talleres,taller_id',
-            'correo' => 'required|email',
+            'dni'           => 'required|numeric|digits_between:1,13|unique:empleados,dni',
+            'nombre'        => 'required|string|max:100',
+            'apellido'      => 'required|string|max:100',
+            'telefono'      => 'nullable|numeric|digits_between:1,8|unique:empleados,telefono',
+            'rol'           => 'required|string|max:100',
+            'taller_id'     => 'required|exists:talleres,taller_id',
+            'correo'        => 'required|email|unique:empleados,correo',
             'fecha_ingreso' => 'required|date',
-            'activo' => 'required|boolean',
+            'activo'        => 'required|boolean',
         ]);
 
         Empleado::create($request->all());
 
-        return redirect()->route('empleados.index')
-            ->with('success', 'Empleado creado correctamente');
+        return redirect()->route('empleados.index')->with('success', 'Empleado creado correctamente.');
     }
 
+    // -----------------------------------------
     // FORMULARIO EDITAR
+    // -----------------------------------------
     public function edit($id)
     {
         $empleado = Empleado::findOrFail($id);
@@ -84,35 +90,45 @@ class EmpleadoController extends Controller
         return view('empleados.edit', compact('empleado', 'talleres'));
     }
 
+    // -----------------------------------------
     // ACTUALIZAR
+    // -----------------------------------------
     public function update(Request $request, $id)
     {
+        $empleado = Empleado::findOrFail($id);
+
         $request->validate([
-            'dni' => 'required',
-            'nombre' => 'required',
-            'apellido' => 'required',
-            'telefono' => 'required',
-            'rol' => 'required',
-            'taller_id' => 'required|exists:talleres,taller_id',
-            'correo' => 'required|email',
+            'dni'           => 'required|numeric|digits_between:1,13|unique:empleados,dni,' . $empleado->empleado_id . ',empleado_id',
+            'nombre'        => 'required|string|max:100',
+            'apellido'      => 'required|string|max:100',
+            'telefono'      => 'nullable|numeric|digits_between:1,8|unique:empleados,telefono,' . $empleado->empleado_id . ',empleado_id',
+            'rol'           => 'required|string|max:100',
+            'taller_id'     => 'required|exists:talleres,taller_id',
+            'correo'        => 'required|email|unique:empleados,correo,' . $empleado->empleado_id . ',empleado_id',
             'fecha_ingreso' => 'required|date',
-            'activo' => 'required|boolean',
+            'activo'        => 'required|boolean',
         ]);
 
-        $empleado = Empleado::findOrFail($id);
         $empleado->update($request->all());
 
-        return redirect()->route('empleados.index')
-            ->with('success', 'Empleado actualizado correctamente');
+        return redirect()->route('empleados.index')->with('success', 'Empleado actualizado correctamente.');
     }
 
-    // Marcar empleado como inactivo en lugar de eliminarlo
-    public function destroy(Empleado $empleado)
+    // -----------------------------------------
+    // ELIMINAR
+    // -----------------------------------------
+    // ELIMINAR (INACTIVAR)
+    public function destroy($id)
     {
-        $empleado->activo = 0; // marcar como inactivo
+        $empleado = Empleado::findOrFail($id);
+
+        $empleado->activo = 0;
         $empleado->save();
 
-        return redirect()->route('empleados.index')
-            ->with('success', 'Empleado marcado como inactivo.');
+        if ($empleado->usuario) {
+            $empleado->usuario->update(['activo' => 0]);
+        }
+
+        return redirect()->route('empleados.index')->with('success', 'Empleado inactivado correctamente');
     }
 }
