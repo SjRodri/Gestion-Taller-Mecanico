@@ -27,23 +27,24 @@ class OrdenController extends Controller
                 $q->where('descripcion_orden', 'LIKE', "%$buscar%")
                     ->orWhere('orden_id', 'LIKE', "%$buscar%");
             })
-            ->when($estado, function ($q) use ($estado) {
-                $q->where('estado', $estado);
-            })
-            ->when($fecha, function ($q) use ($fecha) {
-                $q->whereDate('fecha', $fecha);
-            })
-            ->when($taller_id, function ($q) use ($taller_id) {
-                $q->where('taller_id', $taller_id);
-            })
-            ->when($vehiculo_id, function ($q) use ($vehiculo_id) {
-                $q->where('vehiculo_id', $vehiculo_id);
-            })
+            ->when($estado, fn($q) => $q->where('estado', $estado))
+            ->when($fecha, fn($q) => $q->whereDate('fecha', $fecha))
+            ->when($taller_id, fn($q) => $q->where('taller_id', $taller_id))
+            ->when($vehiculo_id, fn($q) => $q->where('vehiculo_id', $vehiculo_id))
             ->orderBy('orden_id', 'DESC')
             ->paginate(10)
             ->appends($request->query());
 
-        return view('ordenes.index', compact('ordenes', 'buscar', 'estado', 'fecha', 'talleres', 'taller_id', 'vehiculos', 'vehiculo_id'));
+        return view('ordenes.index', compact(
+            'ordenes',
+            'buscar',
+            'estado',
+            'fecha',
+            'talleres',
+            'taller_id',
+            'vehiculos',
+            'vehiculo_id'
+        ));
     }
 
     // FORM CREAR
@@ -77,7 +78,6 @@ class OrdenController extends Controller
                 ->with('error', 'Este taller ya alcanzó el límite de 100 órdenes para esta fecha.');
         }
 
-        // Crear orden
         Orden::create([
             'descripcion_orden' => $request->descripcion_orden,
             'cliente_id' => $request->cliente_id,
@@ -96,6 +96,12 @@ class OrdenController extends Controller
     {
         $orden = Orden::findOrFail($id);
 
+        // Bloqueo si ya está finalizada o cancelada
+        if (in_array($orden->estado, ['finalizada', 'cancelada'])) {
+            return redirect()->route('ordenes.index')
+                ->with('error', 'No puedes editar una orden finalizada o cancelada.');
+        }
+
         $clientes = Cliente::all();
         $talleres = Taller::all();
         $vehiculos = Vehiculo::all();
@@ -106,6 +112,14 @@ class OrdenController extends Controller
     // ACTUALIZAR ORDEN
     public function update(Request $request, $id)
     {
+        $orden = Orden::findOrFail($id);
+
+        // Bloqueo si ya está finalizada o cancelada
+        if (in_array($orden->estado, ['finalizada', 'cancelada'])) {
+            return redirect()->route('ordenes.index')
+                ->with('error', 'No puedes actualizar una orden finalizada o cancelada.');
+        }
+
         $request->validate([
             'descripcion_orden' => 'required',
             'cliente_id' => 'required',
@@ -114,9 +128,6 @@ class OrdenController extends Controller
             'taller_id' => 'required'
         ]);
 
-        $orden = Orden::findOrFail($id);
-
-        // Actualizar orden
         $orden->update([
             'descripcion_orden' => $request->descripcion_orden,
             'cliente_id' => $request->cliente_id,
@@ -130,7 +141,7 @@ class OrdenController extends Controller
             ->with('success', 'Orden actualizada correctamente.');
     }
 
-    // ELIMINAR → SOLO CAMBIA ESTADO (FINALIZADA o CANCELADA)
+    // ELIMINAR → SOLO CAMBIA ESTADO
     public function destroy(Request $request, $id)
     {
         $orden = Orden::findOrFail($id);
