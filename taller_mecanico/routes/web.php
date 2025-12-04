@@ -15,44 +15,73 @@ use App\Http\Controllers\TallerController;
 |--------------------------------------------------------------------------
 | Página raíz → Login
 |--------------------------------------------------------------------------
-|
-| Cuando el usuario entra a http://127.0.0.1:8000 debe ver el login.
-|
 */
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// ---------------- LOGIN ----------------
+/* ---------------- LOGIN ---------------- */
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// ---------------- REGISTRO ----------------
+/* ---------------- REGISTRO ---------------- */
 Route::get('/registro', [RegistroController::class, 'showRegistro'])->name('registro');
 Route::post('/registro', [RegistroController::class, 'registrar'])->name('registrar');
 
-// ---------------- CRUD ----------------
-Route::resource('clientes', ClienteController::class)->middleware('auth');
-Route::resource('empleados', EmpleadoController::class)->middleware('auth');
+/* ============================================================
+   RUTAS PROTEGIDAS POR ROL
+   ============================================================ */
 
-// ---------------- ORDENES ----------------
-Route::resource('ordenes', OrdenController::class)->middleware('auth');
+/* ---------------- ADMIN ---------------- */
+Route::middleware(['auth', 'admin'])->group(function () {
 
-// ---------------- TALLERES ----------------
-Route::resource('talleres', TallerController::class)->middleware('auth');
+    // CLIENTES
+    Route::resource('clientes', ClienteController::class);
 
-// ---------------- MAPA ----------------
-Route::get('/mapa', [MapController::class, 'index'])->middleware('auth')->name('mapa.index');
-Route::get('/api/talleres', [MapController::class, 'talleresJson']);
+    // EMPLEADOS
+    Route::resource('empleados', EmpleadoController::class);
 
-// ---------------- DASHBOARD ----------------
+    // TALLERES
+    Route::resource('talleres', TallerController::class);
+
+    // REPORTES
+    Route::get('/reportes', function () {
+        return view('reportes.index');
+    })->name('reportes.index');
+});
+
+/* ---------------- EMPLEADO ---------------- */
+Route::middleware(['auth', 'empleado'])->group(function () {
+
+    // REPUESTOS
+    Route::get('/repuestos', function () {
+        return view('repuestos.index');
+    })->name('repuestos.index');
+});
+
+/* ---------------- CLIENTE ---------------- */
+Route::middleware(['auth', 'cliente'])->group(function () {
+    Route::resource('ordenes', OrdenController::class)->only(['index', 'create', 'store']);
+});
+
+/* ---------------- COMPARTIDO POR TODOS LOS ROLES ---------------- */
+
 Route::middleware(['auth'])->group(function () {
+    Route::resource('ordenes', OrdenController::class);
+});
+
+// Mapa visible para todos: admin, empleado y cliente
+Route::middleware('auth')->group(function () {
+    Route::get('/mapa', [MapController::class, 'index'])->name('mapa.index');
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 });
 
-// Ruta opcional si algo usa /home
+// API abierta sin auth→ solo datos del mapa
+Route::get('/api/talleres', [MapController::class, 'talleresJson']);
+
+// Compatibilidad con /home
 Route::get('/home', function () {
     return redirect()->route('dashboard');
 })->middleware('auth')->name('home');

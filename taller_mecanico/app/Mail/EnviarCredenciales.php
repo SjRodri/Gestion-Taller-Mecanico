@@ -18,7 +18,11 @@ class EnviarCredenciales extends Mailable
     {
         $this->nombre = $nombre;
         $this->correo = $correo;
-        $this->password = $password;
+        // Censurar contraseña → solo primeros 2 caracteres
+        $visible = substr($password, 0, 2);
+        $oculto = str_repeat('*', max(strlen($password) - 2, 0));
+
+        $this->password = $visible . $oculto;
     }
 
     public function build()

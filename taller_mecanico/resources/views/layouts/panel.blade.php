@@ -120,20 +120,21 @@
 
         @if(auth()->user()->rol == 'admin')
         <a href="/clientes"><i class="fa-solid fa-user me-2"></i> Clientes</a>
-        <a href="#"><i class="fa-solid fa-warehouse me-2"></i> Talleres</a>
+        <a href="/talleres"><i class="fa-solid fa-warehouse me-2"></i> Talleres</a>
         <a href="/empleados"><i class="fa-solid fa-users me-2"></i> Empleados</a>
-        <a href="#"><i class="fa-solid fa-chart-pie me-2"></i> Reportes</a>
+        <a href="/reportes"><i class="fa-solid fa-chart-pie me-2"></i> Reportes</a>
+        <a href="/ordenes"><i class="fa-solid fa-list me-2"></i> Órdenes</a>
         <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Mapa</a>
         @endif
 
         @if(auth()->user()->rol == 'empleado')
-        <a href="#"><i class="fa-solid fa-box me-2"></i> Repuestos</a>
-        <a href="#"><i class="fa-solid fa-list me-2"></i> Órdenes</a>
+        <a href="/repuestos"><i class="fa-solid fa-box me-2"></i> Repuestos</a>
+        <a href="/ordenes"><i class="fa-solid fa-list me-2"></i> Órdenes</a>
         <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Mapa</a>
         @endif
 
         @if(auth()->user()->rol == 'cliente')
-        <a href="#"><i class="fa-solid fa-calendar me-2"></i> Citas</a>
+        <a href="/ordenes"><i class="fa-solid fa-calendar me-2"></i> Citas</a>
         <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Talleres</a>
         @endif
 

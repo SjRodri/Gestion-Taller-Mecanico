@@ -2,7 +2,6 @@
 
 @section('title', 'Inicio')
 @section('page-title', 'Bienvenido, ' . ucfirst(auth()->user()->rol))
-
 @section('content')
 
 <div class="row g-3">
@@ -29,7 +28,7 @@
     </div>
 
     <div class="col-md-4 mb-3">
-        <a href="{{ route('ordenes.create') }}" class="text-decoration-none text-dark">
+        <a href="{{ route('ordenes.index') }}" class="text-decoration-none text-dark">
             <div class="card p-4 text-center hover-card">Próximas citas</div>
         </a>
     </div>
@@ -47,13 +46,13 @@
     </div>
 
     <div class="col-md-4 mb-3">
-        <a href="{{ route('ordenes.index') }}" class="text-decoration-none text-dark">
+        <a href="/ordenes?buscar=&taller_id=&vehiculo_id=&fecha=&estado=finalizada" class="text-decoration-none text-dark">
             <div class="card p-4 text-center hover-card">Órdenes finalizadas</div>
         </a>
     </div>
 
     <div class="col-md-4 mb-3">
-        <a href="{{ route('ordenes.index') }}" class="text-decoration-none text-dark">
+        <a href="/ordenes?buscar=&taller_id=&vehiculo_id=&fecha=&estado=Activa" class="text-decoration-none text-dark">
             <div class="card p-4 text-center hover-card">Próximas citas</div>
         </a>
     </div>

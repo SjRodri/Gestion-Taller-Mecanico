@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.panel')
 
 <head>
     <meta charset="UTF-8">
@@ -11,30 +10,6 @@
 </head>
 
 <body>
-
-    <div class="sidebar">
-        <div>
-            <h2>Gestión de Talleres 🚗</h2>
-
-            <div class="perfil">
-                <div class="foto"></div>
-                <p><strong>Sayd Josue Rodríguez M.</strong></p>
-                <p>example@gmail.com</p>
-            </div>
-
-            <ul class="nav-links">
-                <li><a href="{{ url('/') }}">🏠 Inicio</a></li>
-                <li><a href="{{ url('/clientes') }}">👥 Clientes</a></li>
-                <li><a class="active">📍 Mapa de Sucursales</a></li>
-                <li><a href="#">🧰 Talleres</a></li>
-                <li><a href="#">⚙️ Configuración</a></li>
-            </ul>
-        </div>
-
-        <div class="logout">
-            <a href="{{ url('/login') }}">🚪 Cerrar Sesión</a>
-        </div>
-    </div>
 
     <div class="main-content">
 

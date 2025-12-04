@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Mail\NuevoEmpleadoPendiente;
+use App\Mail\EnviarCredenciales;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use App\Models\Cliente;
 
 class RegistroController extends Controller
 {
@@ -16,46 +18,63 @@ class RegistroController extends Controller
         return view('auth.registro');
     }
 
-    // Procesar registro
+    // Registrar usuario + cliente
     public function registrar(Request $request)
     {
         $request->validate([
-            'email'    => 'required|email|unique:usuarios,email',
-            'password' => 'required|min:6',
-            'rol'      => 'required|in:cliente,empleado',
-            'puesto'   => 'nullable|string|max:150',
+            'dni'       => 'nullable|string|numeric|digits_between:1,13|unique:clientes,dni',
+            'nombre'    => 'required|string|max:100',
+            'apellido'  => 'required|string|max:100',
+            'telefono'  => 'nullable|numeric|digits_between:1,8|unique:clientes,telefono',
+            'direccion' => 'nullable|string|max:255',
+            'email'     => 'required|email|unique:usuarios,email|unique:clientes,correo',
+            'password'  => 'required|min:6',
         ]);
 
-        $rol = $request->rol;
+        DB::beginTransaction();
 
-        // Crear usuario
-        $user = User::create([
-            'email'         => $request->email,
-            'password_hash' => Hash::make($request->password),
-            'rol'           => $rol,
-            'activo'        => $rol === 'cliente' ? 1 : 0, // empleados quedan pendientes
-        ]);
+        try {
 
-        // Si registra empleado → enviar notificación al admin
-        if ($rol === 'empleado') {
+            // Crear usuario tipo cliente
+            $user = User::create([
+                'email'         => $request->email,
+                'password_hash' => Hash::make($request->password),
+                'rol'           => 'cliente',
+                'activo'        => 1,
+            ]);
 
-            $adminEmail = config('app.admin_email', 'admin@tudominio.com');
+            // Crear cliente
+            $cliente = Cliente::create([
+                'dni'       => $request->dni,
+                'nombre'    => $request->nombre,
+                'apellido'  => $request->apellido,
+                'telefono'  => $request->telefono,
+                'direccion' => $request->direccion,
+                'correo'    => $request->email, // usa el mismo email del usuario
+            ]);
 
-            Mail::to($adminEmail)->send(new NuevoEmpleadoPendiente(
-                $user,
-                $request->puesto ?? null
-            ));
+            // Ligar usuario → cliente
+            $user->cliente_id = $cliente->cliente_id;
+            $user->save();
+
+            Mail::to($request->email)->send(
+                new EnviarCredenciales(
+                    $cliente->nombre . ' ' . $cliente->apellido,
+                    $request->email,
+                    $request->password
+                )
+            );
+
+            DB::commit();
 
             return redirect()->route('login')->with(
                 'success',
-                'Te has registrado como empleado. Tu cuenta está pendiente de aprobación.'
+                'Registro exitoso. Ya puedes iniciar sesión.'
             );
-        }
+        } catch (\Exception $e) {
 
-        // Cliente queda activo de inmediato
-        return redirect()->route('login')->with(
-            'success',
-            'Registro exitoso. Ya puedes iniciar sesión.'
-        );
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Ocurrió un error al registrar el cliente: ' . $e->getMessage()]);
+        }
     }
 }
