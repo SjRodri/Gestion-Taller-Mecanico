@@ -11,6 +11,10 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrdenController;
 use App\Http\Controllers\TallerController;
 
+use App\Http\Controllers\RepuestoController;
+use App\Http\Controllers\ReporteVentaController;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 /*
 |--------------------------------------------------------------------------
 | Página raíz → Login
@@ -46,19 +50,32 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // TALLERES
     Route::resource('talleres', TallerController::class);
 
-    // REPORTES
+    // REPORTES (VISTA GENERAL)
     Route::get('/reportes', function () {
         return view('reportes.index');
     })->name('reportes.index');
+
+    // REPORTES DE VENTAS CRUD
+    Route::prefix('reportes-ventas')->group(function () {
+        Route::get('/', [ReporteVentaController::class, 'index'])->name('reportes.ventas.index');
+        Route::get('/create', [ReporteVentaController::class, 'create'])->name('reportes.ventas.create');
+        Route::post('/', [ReporteVentaController::class, 'store'])->name('reportes.ventas.store');
+        Route::get('/{id}/edit', [ReporteVentaController::class, 'edit'])->name('reportes.ventas.edit');
+        Route::put('/{id}', [ReporteVentaController::class, 'update'])->name('reportes.ventas.update');
+        Route::get('/{id}', [ReporteVentaController::class, 'show'])->name('reportes.ventas.show');
+        Route::delete('/{id}', [ReporteVentaController::class, 'destroy'])->name('reportes.ventas.destroy');
+    });
+
+    // Exportar PDF
+    Route::get('/reportes/export/pdf', [ReporteVentaController::class, 'exportPdf'])
+        ->name('reportes.export.pdf');
 });
 
 /* ---------------- EMPLEADO ---------------- */
 Route::middleware(['auth', 'empleado'])->group(function () {
 
     // REPUESTOS
-    Route::get('/repuestos', function () {
-        return view('repuestos.index');
-    })->name('repuestos.index');
+    Route::resource('repuestos', RepuestoController::class);
 });
 
 /* ---------------- CLIENTE ---------------- */
@@ -69,19 +86,26 @@ Route::middleware(['auth', 'cliente'])->group(function () {
 /* ---------------- COMPARTIDO POR TODOS LOS ROLES ---------------- */
 
 Route::middleware(['auth'])->group(function () {
+
+    // Ordenes completas
     Route::resource('ordenes', OrdenController::class);
-});
 
-// Mapa visible para todos: admin, empleado y cliente
-Route::middleware('auth')->group(function () {
-    Route::get('/mapa', [MapController::class, 'index'])->name('mapa.index');
+    // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+
+    // Mapa
+    Route::get('/mapa', [MapController::class, 'index'])->name('mapa.index');
 });
 
-// API abierta sin auth→ solo datos del mapa
+// API pública para el mapa
 Route::get('/api/talleres', [MapController::class, 'talleresJson']);
 
 // Compatibilidad con /home
 Route::get('/home', function () {
     return redirect()->route('dashboard');
 })->middleware('auth')->name('home');
+
+// Test PDF
+Route::get('/pdf-test', function () {
+    return Pdf::loadHTML('<h1>PDF funcionando correctamente</h1>')->stream();
+});
