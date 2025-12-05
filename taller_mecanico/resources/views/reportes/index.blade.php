@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.panel')
 
 @section('page-title', 'Reporte de Ventas')
 
@@ -13,7 +13,7 @@
         <div class="d-flex gap-2">
 
             <!-- botoncito pdf -->
-            <a href="{{ route('reportes.export.pdf') }}" 
+            <a href="{{ route('reportes.export.pdf') }}"
                 class="btn btn-danger">
                 <i class="fa-solid fa-file-pdf"></i> PDF
             </a>
@@ -60,8 +60,8 @@
                             </a>
 
                             <!-- Eliminar -->
-                            <form action="{{ route('reportes.destroy', $r->reporte_id) }}" 
-                                  method="POST" class="d-inline">
+                            <form action="{{ route('reportes.destroy', $r->reporte_id) }}"
+                                method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
 

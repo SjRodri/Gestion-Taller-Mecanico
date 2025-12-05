@@ -52,7 +52,7 @@
 
         .sidebar a {
             display: block;
-            padding: 12px 25px;
+            padding: 8px 20px;
             color: #cfcfcf;
             text-decoration: none;
             font-size: 15px;
@@ -63,7 +63,7 @@
             font-weight: bold;
             color: #bbbbbb;
             text-transform: uppercase;
-            padding: 10px 25px;
+            padding: 10px 20px;
             margin-top: 15px;
         }
 
@@ -120,22 +120,26 @@
 
         @if(auth()->user()->rol == 'admin')
         <a href="/clientes"><i class="fa-solid fa-user me-2"></i> Clientes</a>
-        <a href="/talleres"><i class="fa-solid fa-warehouse me-2"></i> Talleres</a>
         <a href="/empleados"><i class="fa-solid fa-users me-2"></i> Empleados</a>
-        <a href="/reportes"><i class="fa-solid fa-chart-pie me-2"></i> Reportes</a>
+        <a href="/repuestos"><i class="fa-solid fa-box me-2"></i> Repuestos</a>
         <a href="/ordenes"><i class="fa-solid fa-list me-2"></i> Órdenes</a>
+        <a href="/talleres"><i class="fa-solid fa-warehouse me-2"></i> Talleres</a>
         <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Mapa</a>
+        <a href="/reportes"><i class="fa-solid fa-chart-pie me-2"></i> Reportes</a>
+        <a href="/configuracion"><i class="fa-solid fa-gear me-2"></i> Configuracion</a>
         @endif
 
         @if(auth()->user()->rol == 'empleado')
         <a href="/repuestos"><i class="fa-solid fa-box me-2"></i> Repuestos</a>
         <a href="/ordenes"><i class="fa-solid fa-list me-2"></i> Órdenes</a>
         <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Mapa</a>
+        <a href="/configuracion"><i class="fa-solid fa-gear me-2"></i> Configuracion</a>
         @endif
 
         @if(auth()->user()->rol == 'cliente')
         <a href="/ordenes"><i class="fa-solid fa-calendar me-2"></i> Citas</a>
         <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Talleres</a>
+        <a href="/configuracion"><i class="fa-solid fa-gear me-2"></i> Configuracion</a>
         @endif
 
         <form action="{{ route('logout') }}" method="POST" class="mt-4">

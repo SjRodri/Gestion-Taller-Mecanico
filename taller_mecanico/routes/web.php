@@ -49,34 +49,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // TALLERES
     Route::resource('talleres', TallerController::class);
-
-    // REPORTES (VISTA GENERAL)
-    Route::get('/reportes', function () {
-        return view('reportes.index');
-    })->name('reportes.index');
-
-    // REPORTES DE VENTAS CRUD
-    Route::prefix('reportes-ventas')->group(function () {
-        Route::get('/', [ReporteVentaController::class, 'index'])->name('reportes.ventas.index');
-        Route::get('/create', [ReporteVentaController::class, 'create'])->name('reportes.ventas.create');
-        Route::post('/', [ReporteVentaController::class, 'store'])->name('reportes.ventas.store');
-        Route::get('/{id}/edit', [ReporteVentaController::class, 'edit'])->name('reportes.ventas.edit');
-        Route::put('/{id}', [ReporteVentaController::class, 'update'])->name('reportes.ventas.update');
-        Route::get('/{id}', [ReporteVentaController::class, 'show'])->name('reportes.ventas.show');
-        Route::delete('/{id}', [ReporteVentaController::class, 'destroy'])->name('reportes.ventas.destroy');
-    });
-
-    // Exportar PDF
-    Route::get('/reportes/export/pdf', [ReporteVentaController::class, 'exportPdf'])
-        ->name('reportes.export.pdf');
 });
 
 /* ---------------- EMPLEADO ---------------- */
-Route::middleware(['auth', 'empleado'])->group(function () {
-
-    // REPUESTOS
-    Route::resource('repuestos', RepuestoController::class);
-});
+Route::middleware(['auth', 'empleado'])->group(function () {});
 
 /* ---------------- CLIENTE ---------------- */
 Route::middleware(['auth', 'cliente'])->group(function () {
@@ -95,6 +71,43 @@ Route::middleware(['auth'])->group(function () {
 
     // Mapa
     Route::get('/mapa', [MapController::class, 'index'])->name('mapa.index');
+
+    // REPUESTOS
+    Route::resource('repuestos', RepuestoController::class);
+
+    // REPORTES (VISTA GENERAL)
+    Route::get('/reportes', function () {
+        return view('reportes.index');
+    })->name('reportes.index');
+
+    // REPORTES DE VENTAS CRUD
+    Route::prefix('reportes')->group(function () {
+
+        // LISTADO DE REPORTES
+        Route::get('/', [ReporteVentaController::class, 'index'])->name('reportes.index');
+
+        // CREAR
+        Route::get('/create', [ReporteVentaController::class, 'create'])->name('reportes.create');
+
+        // GUARDAR
+        Route::post('/', [ReporteVentaController::class, 'store'])->name('reportes.store');
+
+        // EDITAR
+        Route::get('/{id}/edit', [ReporteVentaController::class, 'edit'])->name('reportes.edit');
+
+        // ACTUALIZAR
+        Route::put('/{id}', [ReporteVentaController::class, 'update'])->name('reportes.update');
+
+        // DETALLE
+        Route::get('/{id}', [ReporteVentaController::class, 'show'])->name('reportes.show');
+
+        // ELIMINAR
+        Route::delete('/{id}', [ReporteVentaController::class, 'destroy'])->name('reportes.destroy');
+    });
+
+    // Descargar PDF
+    Route::get('/reportes/export/pdf', [ReporteVentaController::class, 'exportPdf'])
+        ->name('reportes.export.pdf');
 });
 
 // API pública para el mapa
