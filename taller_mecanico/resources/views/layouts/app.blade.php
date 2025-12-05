@@ -133,7 +133,7 @@
             </form>
 
             <button class="btn btn-outline-success"
-                onclick="window.location='{{ route('empleados.create') }}'">
+                onclick="window.location='{{ route(';empleados.create;') }}'">
                 <i class="fa-solid fa-plus"></i>
             </button>
         </div>
