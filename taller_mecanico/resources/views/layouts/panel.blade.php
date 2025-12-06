@@ -121,6 +121,7 @@
         @if(auth()->user()->rol == 'admin')
         <a href="/clientes"><i class="fa-solid fa-user me-2"></i> Clientes</a>
         <a href="/empleados"><i class="fa-solid fa-users me-2"></i> Empleados</a>
+        <a href="/vehiculos"><i class="fa-solid fa-car me-2"></i> Vehiculos</a>
         <a href="/repuestos"><i class="fa-solid fa-box me-2"></i> Repuestos</a>
         <a href="/ordenes"><i class="fa-solid fa-list me-2"></i> Órdenes</a>
         <a href="/talleres"><i class="fa-solid fa-warehouse me-2"></i> Talleres</a>
@@ -131,6 +132,7 @@
         @if(auth()->user()->rol == 'empleado')
         <a href="/repuestos"><i class="fa-solid fa-box me-2"></i> Repuestos</a>
         <a href="/ordenes"><i class="fa-solid fa-list me-2"></i> Órdenes</a>
+        <a href="/vehiculos"><i class="fa-solid fa-car me-2"></i> Vehiculos</a>
         <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Mapa</a>
         <a href="/configuracion"><i class="fa-solid fa-gear me-2"></i> Configuracion</a>
         @endif

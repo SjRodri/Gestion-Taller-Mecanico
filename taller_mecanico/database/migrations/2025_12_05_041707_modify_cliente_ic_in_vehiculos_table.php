@@ -9,14 +9,11 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        if (!Schema::hasTable('clientes')) {
-            Schema::create('clientes', function (Blueprint $table) {
-                $table->id();
-                $table->timestamps();
-            });
-        }
+        Schema::table('vehiculos', function (Blueprint $table) {
+            $table->integer('cliente_ic')->nullable()->change();
+        });
     }
 
     /**
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clientes');
+        Schema::table('vehiculos', function (Blueprint $table) {
+            $table->integer('cliente_ic')->nullable(false)->change();
+        });
     }
 };

@@ -13,6 +13,18 @@ return new class extends Migration
     {
         Schema::create('vehiculos', function (Blueprint $table) {
             $table->id();
+            $table->string('matricula')->unique();
+            $table->string('marca');
+            $table->string('modelo');
+            $table->year('anio')->nullable();
+
+            // Relación con clientes
+            $table->unsignedBigInteger('cliente_id')->nullable();
+            $table->foreign('cliente_id')
+                ->references('id')
+                ->on('clientes')
+                ->onDelete('set null');
+
             $table->timestamps();
         });
     }

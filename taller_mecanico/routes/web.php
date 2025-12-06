@@ -12,19 +12,12 @@ use App\Http\Controllers\TallerController;
 use App\Http\Controllers\RepuestoController;
 use App\Http\Controllers\ReporteVentaController;
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\VehiculoController;
+use App\Models\Vehiculo;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-/*
-|--------------------------------------------------------------------------
-| Página raíz → Login
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/', function () {
-    return redirect()->route('login');
-});
-
 /* ---------------- LOGIN ---------------- */
+
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -64,6 +57,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Ordenes completas
     Route::resource('ordenes', OrdenController::class);
+
+    // Vehículos
+    Route::resource('vehiculos', VehiculoController::class);
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');

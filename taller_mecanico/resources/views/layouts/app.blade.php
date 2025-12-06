@@ -105,6 +105,41 @@
     <div class="main-content">
         <div class="page-header">@yield('page-title')</div>
 
+<<<<<<< HEAD
+=======
+        <!-- Controles: Solo se muestran en INDEX -->
+        @if (request()->routeIs('empleados.index'))
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <form method="GET" action="{{ route('empleados.index') }}" class="d-flex gap-2">
+
+                <input type="text" name="buscar" value="{{ request('buscar') }}"
+                    class="form-control" placeholder="Buscar empleado...">
+
+                <select name="rol" class="form-select">
+                    <option value="">Rol</option>
+                    <option value="Administrador" {{ request('rol') == 'Administrador' ? 'selected' : '' }}>Administrador</option>
+                    <option value="Mecánico" {{ request('rol') == 'Mecánico' ? 'selected' : '' }}>Mecánico</option>
+                    <option value="Recepción" {{ request('rol') == 'Recepción' ? 'selected' : '' }}>Recepción</option>
+                </select>
+
+                <select name="activo" class="form-select">
+                    <option value="">Activo</option>
+                    <option value="1" {{ request('activo') === '1' ? 'selected' : '' }}>Sí</option>
+                    <option value="0" {{ request('activo') === '0' ? 'selected' : '' }}>No</option>
+                </select>
+
+                <button class="btn btn-outline-secondary"><i class="fa-solid fa-filter"></i></button>
+            </form>
+
+            <button class="btn btn-outline-success"
+                onclick="window.location='{{ route(';empleados.create;') }}'">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+        @endif
+
+>>>>>>> origin/feature/vehiculos
         @yield('content')
     </div>
 
