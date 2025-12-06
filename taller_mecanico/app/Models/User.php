@@ -35,14 +35,14 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    // public function empleado()
-    // {
-    //     return $this->belongsTo(Empleado::class, 'empleado_id');
-    // }
-    // public function cliente()
-    // {
-    //     return $this->belongsTo(Cliente::class, 'cliente_id');
-    // }
+    public function empleado()
+    {
+        return $this->belongsTo(Empleado::class, 'empleado_id');
+    }
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'cliente_id');
+    }
 
     /**
      * 🔐 Método requerido por Laravel para saber qué campo es la contraseña.

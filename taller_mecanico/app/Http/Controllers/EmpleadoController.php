@@ -4,7 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Empleado;
 use App\Models\Taller;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use App\Mail\EnviarCredenciales;
+use Illuminate\Support\Facades\Mail;
+
 
 class EmpleadoController extends Controller
 {
@@ -15,34 +21,27 @@ class EmpleadoController extends Controller
     {
         $query = Empleado::with('taller');
 
-        // FILTRO: BUSCAR
         if ($request->buscar) {
             $query->where(function ($q) use ($request) {
-                $q->where('nombre', 'LIKE', '%' . $request->buscar . '%')
-                    ->orWhere('apellido', 'LIKE', '%' . $request->buscar . '%')
-                    ->orWhere('dni', 'LIKE', '%' . $request->buscar . '%');
+                $q->where('nombre', 'LIKE', '%' . request('buscar') . '%')
+                    ->orWhere('apellido', 'LIKE', '%' . request('buscar') . '%')
+                    ->orWhere('dni', 'LIKE', '%' . request('buscar') . '%');
             });
         }
 
-        // FILTRO: ROL
         if ($request->rol) {
             $query->where('rol', $request->rol);
         }
 
-        // FILTRO: ACTIVO
         if ($request->activo !== null && $request->activo !== "") {
             $query->where('activo', $request->activo);
         }
 
-        // FILTRO: TALLER
         if ($request->taller) {
             $query->where('taller_id', $request->taller);
         }
 
-        // ORDEN Y PAGINACIÓN
         $empleados = $query->orderBy('empleado_id', 'DESC')->paginate(10);
-
-        // CARGA DE TALLERES PARA EL SELECT DEL INDEX
         $talleres = Taller::all();
 
         return view('empleados.index', compact('empleados', 'talleres'));
@@ -58,7 +57,7 @@ class EmpleadoController extends Controller
     }
 
     // -----------------------------------------
-    // GUARDAR EMPLEADO
+    // GUARDAR EMPLEADO + CREAR USUARIO
     // -----------------------------------------
     public function store(Request $request)
     {
@@ -71,12 +70,65 @@ class EmpleadoController extends Controller
             'taller_id'     => 'required|exists:talleres,taller_id',
             'correo'        => 'required|email|unique:empleados,correo',
             'fecha_ingreso' => 'required|date',
-            'activo'        => 'required|boolean',
+            'activo'        => 'required|in:1',
+        ], [
+            'dni.required'           => 'El campo DNI es obligatorio.',
+            'dni.numeric'            => 'El campo DNI debe contener solo números.',
+            'dni.digits_between'     => 'El campo DNI debe tener entre 1 y 13 dígitos.',
+            'dni.unique'             => 'El DNI ingresado ya está registrado.',
+
+            'nombre.required'        => 'El nombre es obligatorio.',
+            'nombre.max'             => 'El nombre no puede exceder los 100 caracteres.',
+
+            'apellido.required'      => 'El apellido es obligatorio.',
+            'apellido.max'           => 'El apellido no puede exceder los 100 caracteres.',
+
+            'telefono.numeric'       => 'El teléfono debe contener solo números.',
+            'telefono.digits_between' => 'El teléfono debe tener máximo 8 dígitos.',
+            'telefono.unique'        => 'Este número de teléfono ya está registrado.',
+
+            'rol.required'           => 'El rol es obligatorio.',
+
+            'taller_id.required'     => 'Debe seleccionar un taller.',
+            'taller_id.exists'       => 'El taller seleccionado no existe.',
+
+            'correo.required'        => 'El correo es obligatorio.',
+            'correo.email'           => 'Ingrese un correo electrónico válido.',
+            'correo.unique'          => 'El correo ingresado ya está registrado.',
+
+            'fecha_ingreso.required' => 'La fecha de ingreso es obligatoria.',
+            'fecha_ingreso.date'     => 'Debe ingresar una fecha válida.',
+
+            'activo.required'        => 'El estado activo es obligatorio.',
         ]);
 
-        Empleado::create($request->all());
+        // 1. Crear empleado
+        $empleado = Empleado::create($request->all());
 
-        return redirect()->route('empleados.index')->with('success', 'Empleado creado correctamente.');
+        // 2. Generar contraseña aleatoria
+        $password = Str::random(10);
+
+        // 3. Crear usuario automáticamente
+        Usuario::create([
+            'email'         => $empleado->correo,
+            'password_hash' => Hash::make($password),
+            'rol'           => strtolower($empleado->rol) === 'administrador' || strtolower($empleado->rol) === 'admin' ? 'admin' : 'empleado',
+            'empleado_id'   => $empleado->empleado_id,
+            'activo'        => 1,
+        ]);
+
+        // Enviar correo con credenciales
+        Mail::to($empleado->correo)->send(
+            new EnviarCredenciales(
+                $empleado->nombre . ' ' . $empleado->apellido,
+                $empleado->correo,
+                $password
+            )
+        );
+
+
+        return redirect()->route('empleados.index')
+            ->with('success', 'Empleado y usuario creado correctamente.');
     }
 
     // -----------------------------------------
@@ -91,7 +143,7 @@ class EmpleadoController extends Controller
     }
 
     // -----------------------------------------
-    // ACTUALIZAR
+    // ACTUALIZAR EMPLEADO + ACTUALIZAR USUARIO
     // -----------------------------------------
     public function update(Request $request, $id)
     {
@@ -107,17 +159,60 @@ class EmpleadoController extends Controller
             'correo'        => 'required|email|unique:empleados,correo,' . $empleado->empleado_id . ',empleado_id',
             'fecha_ingreso' => 'required|date',
             'activo'        => 'required|boolean',
+        ], [
+            'dni.required'           => 'El campo DNI es obligatorio.',
+            'dni.numeric'            => 'El campo DNI debe contener solo números.',
+            'dni.digits_between'     => 'El campo DNI debe tener entre 1 y 13 dígitos.',
+            'dni.unique'             => 'El DNI ingresado ya está registrado por otro empleado.',
+
+            'nombre.required'        => 'El nombre es obligatorio.',
+            'nombre.max'             => 'El nombre no puede exceder los 100 caracteres.',
+
+            'apellido.required'      => 'El apellido es obligatorio.',
+            'apellido.max'           => 'El apellido no puede exceder los 100 caracteres.',
+
+            'telefono.numeric'       => 'El teléfono debe contener solo números.',
+            'telefono.digits_between' => 'El teléfono debe tener máximo 8 dígitos.',
+            'telefono.unique'        => 'Este número de teléfono ya está registrado.',
+
+            'rol.required'           => 'El rol es obligatorio.',
+
+            'taller_id.required'     => 'Debe seleccionar un taller.',
+            'taller_id.exists'       => 'El taller seleccionado no existe.',
+
+            'correo.required'        => 'El correo es obligatorio.',
+            'correo.email'           => 'Ingrese un correo electrónico válido.',
+            'correo.unique'          => 'El correo ingresado ya está registrado por otro empleado.',
+
+            'fecha_ingreso.required' => 'La fecha de ingreso es obligatoria.',
+            'fecha_ingreso.date'     => 'Debe ingresar una fecha válida.',
+
+            'activo.required'        => 'Debe seleccionar el estado del empleado.',
+            'activo.boolean'         => 'El campo activo debe ser verdadero o falso.',
         ]);
 
+        // 1. Actualizar empleado
         $empleado->update($request->all());
 
-        return redirect()->route('empleados.index')->with('success', 'Empleado actualizado correctamente.');
+        // 2. Actualizar usuario si existe
+        if ($empleado->usuario) {
+            $empleado->usuario->update([
+                'email'  => $empleado->correo,
+                'rol'    => strtolower($empleado->rol) === 'administrador' || strtolower($empleado->rol) === 'admin'
+                    ? 'admin'
+                    : 'empleado',
+                'activo' => $empleado->activo,
+            ]);
+        }
+
+
+        return redirect()->route('empleados.index')
+            ->with('success', 'Empleado y usuario actualizados correctamente.');
     }
 
     // -----------------------------------------
-    // ELIMINAR
+    // ELIMINAR (INACTIVAR) EMPLEADO + USUARIO
     // -----------------------------------------
-    // ELIMINAR (INACTIVAR)
     public function destroy($id)
     {
         $empleado = Empleado::findOrFail($id);
@@ -129,6 +224,7 @@ class EmpleadoController extends Controller
             $empleado->usuario->update(['activo' => 0]);
         }
 
-        return redirect()->route('empleados.index')->with('success', 'Empleado inactivado correctamente');
+        return redirect()->route('empleados.index')
+            ->with('success', 'Empleado y usuario inactivados correctamente.');
     }
 }

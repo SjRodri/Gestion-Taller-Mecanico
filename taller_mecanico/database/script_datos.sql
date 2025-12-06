@@ -119,18 +119,19 @@ VALUES
 
 
 SELECT * FROM gestion_de_talleres.configuracion;
-INSERT INTO configuracion (clave, valor, descripcion)
+INSERT INTO configuracion (clave, valor, descripcion, cliente_id, empleado_id)
 VALUES
-('nombre_sistema', 'Gestión de Talleres Pro', 'Nombre del sistema mostrado en la interfaz'),
-('horario_atencion', 'Lun-Vie 8:00-17:00, Sab 8:00-12:00', 'Horario de atención al cliente'),
-('iva', '15', 'Porcentaje de IVA aplicado a repuestos y servicios'),
-('moneda', 'Lempira', 'Moneda utilizada en el sistema'),
-('max_citas_dia', '20', 'Número máximo de citas por día por taller'),
-('correo_admin', 'admin@taller.com', 'Correo electrónico del administrador'),
-('recordatorio_citas', '1', 'Enviar recordatorio de cita 1 día antes (1=Sí, 0=No)'),
-('reorden_default', '5', 'Cantidad mínima de repuestos antes de generar alerta de reorden'),
-('modo_mantenimiento', '0', 'Indica si el sistema está en mantenimiento (1=Sí, 0=No)'),
-('notificaciones', '1', 'Activar notificaciones por correo para clientes y empleados (1=Sí, 0=No)');
+('nombre_sistema', 'Gestión de Talleres Pro', 'Nombre del sistema mostrado en la interfaz', 14, NULL),
+('horario_atencion', 'Lun-Vie 8:00-17:00, Sab 8:00-12:00', 'Horario de atención al cliente', 14, NULL),
+('iva', '15', 'Porcentaje de IVA aplicado a repuestos y servicios', 14, NULL),
+('moneda', 'Lempira', 'Moneda utilizada en el sistema', 14, NULL),
+('max_citas_dia', '20', 'Número máximo de citas por día por taller', 15, NULL),
+('correo_admin', 'admin@taller.com', 'Correo electrónico del administrador', 15, NULL),
+('recordatorio_citas', '1', 'Enviar recordatorio de cita 1 día antes (1=Sí, 0=No)', 15, NULL),
+('reorden_default', '5', 'Cantidad mínima de repuestos antes de generar alerta de reorden', 15, NULL),
+('modo_mantenimiento', '0', 'Indica si el sistema está en mantenimiento (1=Sí, 0=No)', 14, NULL),
+('notificaciones', '1', 'Activar notificaciones por correo para clientes y empleados (1=Sí, 0=No)', 15, NULL);
+
 
 
 SELECT * FROM gestion_de_talleres.usuarios;--

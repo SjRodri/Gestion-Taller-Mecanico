@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\ClienteController;
@@ -10,9 +9,9 @@ use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrdenController;
 use App\Http\Controllers\TallerController;
-
 use App\Http\Controllers\RepuestoController;
 use App\Http\Controllers\ReporteVentaController;
+use App\Http\Controllers\ConfiguracionController;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 /*
@@ -74,6 +73,11 @@ Route::middleware(['auth'])->group(function () {
 
     // REPUESTOS
     Route::resource('repuestos', RepuestoController::class);
+
+    // Rutas de Configuración usando resource
+    Route::resource('configuracion', ConfiguracionController::class)->parameters([
+        'configuracion' => 'id' // El {id} se pasará a los métodos edit, update y destroy
+    ]);
 
     // REPORTES (VISTA GENERAL)
     Route::get('/reportes', function () {

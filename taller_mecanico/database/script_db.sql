@@ -98,10 +98,14 @@ CREATE TABLE citas (
 
 CREATE TABLE configuracion (
     config_id INT AUTO_INCREMENT PRIMARY KEY,
-    clave VARCHAR(100) UNIQUE,
-    valor TEXT,
+    clave VARCHAR(100) UNIQUE NOT NULL,
+    valor TEXT NOT NULL,
     descripcion VARCHAR(255),
-    actualizado TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    cliente_id INT NULL,
+    empleado_id INT NULL,
+    actualizado TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(cliente_id) ON DELETE SET NULL,
+    FOREIGN KEY (empleado_id) REFERENCES empleados(empleado_id) ON DELETE SET NULL
 );
 
 CREATE TABLE usuarios (

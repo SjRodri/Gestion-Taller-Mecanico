@@ -15,6 +15,7 @@
 
     <p><strong>Correo:</strong> {{ $correo }}</p>
     <p><strong>Contraseña:</strong> {{ $password }}</p>
+    <p>Tu contraseña se genera de una cadena automatica, asegurate de guardarla bien</p>
 
     <br>
     <p>Gracias por confiar en nosotros,</p>

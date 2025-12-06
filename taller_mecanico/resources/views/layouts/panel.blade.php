@@ -126,7 +126,6 @@
         <a href="/talleres"><i class="fa-solid fa-warehouse me-2"></i> Talleres</a>
         <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Mapa</a>
         <a href="/reportes"><i class="fa-solid fa-chart-pie me-2"></i> Reportes</a>
-        <a href="/configuracion"><i class="fa-solid fa-gear me-2"></i> Configuracion</a>
         @endif
 
         @if(auth()->user()->rol == 'empleado')

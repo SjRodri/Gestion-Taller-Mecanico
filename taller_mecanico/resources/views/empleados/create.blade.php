@@ -6,13 +6,13 @@
 
     {{-- MENSAJES DE ERROR --}}
     @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
     @endif
 
     <form action="{{ route('empleados.store') }}" method="POST">
@@ -29,7 +29,7 @@
                 class="form-control @error('dni') is-invalid @enderror"
                 required>
             @error('dni')
-                <span class="text-danger">{{ $message }}</span>
+            <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>
 
@@ -41,7 +41,7 @@
                 class="form-control @error('nombre') is-invalid @enderror"
                 required>
             @error('nombre')
-                <span class="text-danger">{{ $message }}</span>
+            <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>
 
@@ -53,7 +53,7 @@
                 class="form-control @error('apellido') is-invalid @enderror"
                 required>
             @error('apellido')
-                <span class="text-danger">{{ $message }}</span>
+            <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>
 
@@ -67,7 +67,7 @@
                 pattern="[0-9]+"
                 class="form-control @error('telefono') is-invalid @enderror">
             @error('telefono')
-                <span class="text-danger">{{ $message }}</span>
+            <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>
 
@@ -79,7 +79,7 @@
                 class="form-control @error('rol') is-invalid @enderror"
                 required>
             @error('rol')
-                <span class="text-danger">{{ $message }}</span>
+            <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>
 
@@ -90,13 +90,13 @@
                 required>
                 <option value="">Seleccione un taller</option>
                 @foreach($talleres as $t)
-                    <option value="{{ $t->taller_id }}" {{ old('taller_id') == $t->taller_id ? 'selected' : '' }}>
-                        {{ $t->nombre }}
-                    </option>
+                <option value="{{ $t->taller_id }}" {{ old('taller_id') == $t->taller_id ? 'selected' : '' }}>
+                    {{ $t->nombre }}
+                </option>
                 @endforeach
             </select>
             @error('taller_id')
-                <span class="text-danger">{{ $message }}</span>
+            <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>
 
@@ -108,7 +108,7 @@
                 class="form-control @error('correo') is-invalid @enderror"
                 required>
             @error('correo')
-                <span class="text-danger">{{ $message }}</span>
+            <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>
 
@@ -121,7 +121,7 @@
                 class="form-control @error('fecha_ingreso') is-invalid @enderror"
                 required>
             @error('fecha_ingreso')
-                <span class="text-danger">{{ $message }}</span>
+            <span class="text-danger">{{ $message }}</span>
             @enderror
         </div>
 

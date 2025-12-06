@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Models\Taller;
 use App\Models\Vehiculo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrdenController extends Controller
 {
@@ -22,6 +23,7 @@ class OrdenController extends Controller
         $talleres = Taller::all();
         $vehiculos = Vehiculo::all();
 
+        // Base de consulta
         $ordenes = Orden::query()
             ->when($buscar, function ($q) use ($buscar) {
                 $q->where('descripcion_orden', 'LIKE', "%$buscar%")
@@ -30,8 +32,22 @@ class OrdenController extends Controller
             ->when($estado, fn($q) => $q->where('estado', $estado))
             ->when($fecha, fn($q) => $q->whereDate('fecha', $fecha))
             ->when($taller_id, fn($q) => $q->where('taller_id', $taller_id))
-            ->when($vehiculo_id, fn($q) => $q->where('vehiculo_id', $vehiculo_id))
-            ->orderBy('orden_id', 'DESC')
+            ->when($vehiculo_id, fn($q) => $q->where('vehiculo_id', $vehiculo_id));
+
+        // FILTRO PARA CLIENTE (si está autenticado y su rol es 'cliente')
+        if (Auth::check() && Auth::user()->rol === 'cliente') {
+            $clienteId = Auth::user()->cliente_id;
+            // Seguridad: si por alguna razón no tiene cliente_id, devolvemos vacío
+            if ($clienteId) {
+                $ordenes->where('cliente_id', $clienteId);
+            } else {
+                // Force empty result set
+                $ordenes->whereRaw('1 = 0');
+            }
+        }
+
+        // Finalizar consulta
+        $ordenes = $ordenes->orderBy('orden_id', 'DESC')
             ->paginate(10)
             ->appends($request->query());
 
@@ -50,9 +66,30 @@ class OrdenController extends Controller
     // FORM CREAR
     public function create()
     {
-        $clientes = Cliente::all();
+        // Si hay un usuario autenticado y es cliente -> limitar clientes
+        if (Auth::check() && Auth::user()->rol === 'cliente') {
+
+            $user = Auth::user();
+
+            // Obtener el cliente vinculado al usuario
+            $cliente = null;
+            if (!empty($user->cliente_id)) {
+                $cliente = Cliente::find($user->cliente_id);
+            }
+
+            // Si no se encuentra el cliente, enviar una colección vacía (evita errores en la vista)
+            $clientes = $cliente ? collect([$cliente]) : collect();
+
+            // Vehículos
+            $vehiculos = Vehiculo::all();
+        } else {
+            // Admin y Empleado ven todo
+            $clientes = Cliente::all();
+            $vehiculos = Vehiculo::all();
+        }
+
+        // Talleres visibles para todos
         $talleres = Taller::all();
-        $vehiculos = Vehiculo::all();
 
         return view('ordenes.create', compact('clientes', 'talleres', 'vehiculos'));
     }
@@ -66,6 +103,18 @@ class OrdenController extends Controller
             'fecha' => 'required|date|after_or_equal:today',
             'taller_id' => 'required'
         ]);
+
+        // Si el usuario autenticado es cliente, forzamos que la orden use su cliente_id
+        if (Auth::check() && Auth::user()->rol === 'cliente') {
+            $user = Auth::user();
+
+            if (empty($user->cliente_id)) {
+                return back()->with('error', 'No se pudo identificar tu perfil de cliente.');
+            }
+
+            // Reemplazamos el cliente_id enviado por el del usuario autenticado
+            $request->merge(['cliente_id' => $user->cliente_id]);
+        }
 
         // Validación: máximo 100 órdenes por taller y fecha
         $ordenesPorTallerYFecha = Orden::where('taller_id', $request->taller_id)
@@ -91,20 +140,47 @@ class OrdenController extends Controller
             ->with('success', 'Orden creada correctamente.');
     }
 
-    // FORM EDITAR
+    // FORM EDITAR 
     public function edit($id)
     {
         $orden = Orden::findOrFail($id);
+
+        // 🚫 Validación: evitar acceso a órdenes de otros clientes
+        if (Auth::user()->rol === 'cliente' && $orden->cliente_id !== Auth::user()->cliente_id) {
+            return redirect()->route('ordenes.index')
+                ->with('error', 'No tienes permiso para acceder a esta orden.');
+        }
+
+        // Si hay un usuario autenticado y es cliente -> limitar clientes
+        if (Auth::check() && Auth::user()->rol === 'cliente') {
+
+            $user = Auth::user();
+
+            // Obtener el cliente vinculado al usuario
+            $cliente = null;
+            if (!empty($user->cliente_id)) {
+                $cliente = Cliente::find($user->cliente_id);
+            }
+
+            // Si no se encuentra el cliente, enviar una colección vacía
+            $clientes = $cliente ? collect([$cliente]) : collect();
+
+            // Vehículos (si quiere restringir, debe filtrar aquí)
+            $vehiculos = Vehiculo::all();
+        } else {
+            // Admin y Empleado ven todo
+            $clientes = Cliente::all();
+            $vehiculos = Vehiculo::all();
+        }
+
+        // Talleres visibles para todos
+        $talleres = Taller::all();
 
         // Bloqueo si ya está finalizada o cancelada
         if (in_array($orden->estado, ['finalizada', 'cancelada'])) {
             return redirect()->route('ordenes.index')
                 ->with('error', 'No puedes editar una orden finalizada o cancelada.');
         }
-
-        $clientes = Cliente::all();
-        $talleres = Taller::all();
-        $vehiculos = Vehiculo::all();
 
         return view('ordenes.edit', compact('orden', 'clientes', 'talleres', 'vehiculos'));
     }
@@ -113,6 +189,12 @@ class OrdenController extends Controller
     public function update(Request $request, $id)
     {
         $orden = Orden::findOrFail($id);
+
+        // 🚫 Validación: evitar actualización de órdenes de otros clientes
+        if (Auth::user()->rol === 'cliente' && $orden->cliente_id !== Auth::user()->cliente_id) {
+            return redirect()->route('ordenes.index')
+                ->with('error', 'No tienes permiso para modificar esta orden.');
+        }
 
         // Bloqueo si ya está finalizada o cancelada
         if (in_array($orden->estado, ['finalizada', 'cancelada'])) {
@@ -140,6 +222,7 @@ class OrdenController extends Controller
         return redirect()->route('ordenes.index')
             ->with('success', 'Orden actualizada correctamente.');
     }
+
 
     // ELIMINAR → SOLO CAMBIA ESTADO
     public function destroy(Request $request, $id)
