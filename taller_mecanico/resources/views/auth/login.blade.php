@@ -17,7 +17,7 @@
 
         .card {
             background-color: #ffffff;
-            border: 2px solid #007bff;
+            border: 2px solid #9A0D1B;
             border-radius: 15px;
             padding: 30px;
             width: 100%;
@@ -32,31 +32,31 @@
         }
 
         .btn-login {
-            background-color: #007bff;
+            background-color: #9A0D1B;
             color: white;
             border-radius: 8px;
             font-weight: 600;
         }
 
         .btn-login:hover {
-            background-color: #0056b3;
+            background-color: #e74353ff;
         }
 
         .btn-regresar {
             background-color: white;
-            color: #007bff;
-            border: 2px solid #007bff;
+            color: #9A0D1B;
+            border: 2px solid #9A0D1B;
             border-radius: 8px;
             font-weight: 600;
         }
 
         .btn-regresar:hover {
-            background-color: #007bff;
+            background-color: #e74353ff;
             color: white;
         }
 
         .link {
-            color: #007bff;
+            color: #9A0D1B;
             font-size: 0.9rem;
         }
     </style>

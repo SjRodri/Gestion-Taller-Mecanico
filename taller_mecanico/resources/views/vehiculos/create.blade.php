@@ -10,7 +10,7 @@
 
 <body>
     <div class="container">
-        <h1>Agregar Vehiculo</h1>
+       
 
         @if ($errors->any())
         <div class="error-messages">
@@ -22,7 +22,7 @@
         </div>
         @endif
 
-        @extends('layouts.app')
+        @extends('layouts.panel')
 
         @section('content')
         <div class="container">
