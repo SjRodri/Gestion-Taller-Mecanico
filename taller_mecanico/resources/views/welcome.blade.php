@@ -58,6 +58,11 @@
             <div class="card p-4 text-center hover-card">Descargar ultimo reporte de ventas</div>
         </a>
     </div>
+    <div class="col-md-4 mb-3">
+        <a href="http://127.0.0.1:8000/manuales/manual_administrador.pdf" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center hover-card">Ver Manual Admin</div>
+        </a>
+    </div>
     @endif
 
     @if(auth()->user()->rol == 'empleado')
@@ -74,6 +79,18 @@
     <div class="col-md-4 mb-3">
         <a href="/ordenes?buscar=&taller_id=&vehiculo_id=&fecha=&estado=Activa" class="text-decoration-none text-dark">
             <div class="card p-4 text-center hover-card">Próximas citas</div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <a href="/vehiculos/create" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center hover-card">Agregar Vehiculo</div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <a href="http://127.0.0.1:8000/manuales/manual_empleados.pdf" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center hover-card">Ver Manual Empleado</div>
         </a>
     </div>
     @endif
@@ -94,6 +111,11 @@
     <div class="col-md-4 mb-3">
         <a href="{{ url('/mapa') }}" class="text-decoration-none text-dark">
             <div class="card p-4 text-center hover-card">Mapa de talleres</div>
+        </a>
+    </div>
+    <div class="col-md-4 mb-3">
+        <a href="http://127.0.0.1:8000/manuales/manual_clientes.pdf" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center hover-card">Ver Manual Cliente</div>
         </a>
     </div>
     @endif

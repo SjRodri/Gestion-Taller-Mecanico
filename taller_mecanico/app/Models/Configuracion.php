@@ -13,6 +13,8 @@ class Configuracion extends Model
     protected $fillable = [
         'clave',
         'valor',
-        'descripcion'
+        'descripcion',
+        'cliente_id',
+        'empleado_id'
     ];
 }

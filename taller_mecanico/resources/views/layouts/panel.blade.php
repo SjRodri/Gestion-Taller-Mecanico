@@ -134,13 +134,13 @@
         <a href="/ordenes"><i class="fa-solid fa-list me-2"></i> Órdenes</a>
         <a href="/vehiculos"><i class="fa-solid fa-car me-2"></i> Vehiculos</a>
         <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Mapa</a>
-        <a href="/configuracion"><i class="fa-solid fa-gear me-2"></i> Configuracion</a>
+        <a href="/configuracion"><i class="fa-solid fa-book me-2"></i> Lista de Recordatorios</a>
         @endif
 
         @if(auth()->user()->rol == 'cliente')
         <a href="/ordenes"><i class="fa-solid fa-calendar me-2"></i> Citas</a>
         <a href="/mapa"><i class="fa-solid fa-map me-2"></i> Talleres</a>
-        <a href="/configuracion"><i class="fa-solid fa-gear me-2"></i> Configuracion</a>
+        <a href="/configuracion"><i class="fa-solid fa-book me-2"></i> Lista de Recordatorios</a>
         @endif
 
         <form action="{{ route('logout') }}" method="POST" class="mt-4">

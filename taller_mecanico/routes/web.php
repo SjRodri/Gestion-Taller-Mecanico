@@ -122,3 +122,7 @@ Route::get('/home', function () {
 Route::get('/pdf-test', function () {
     return Pdf::loadHTML('<h1>PDF funcionando correctamente</h1>')->stream();
 });
+
+Route::get('/', function () {
+    return redirect()->route('login');
+});

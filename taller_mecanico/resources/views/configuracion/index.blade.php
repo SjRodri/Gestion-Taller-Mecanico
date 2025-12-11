@@ -2,32 +2,12 @@
 
 @section('content')
 <div style="padding: 20px;">
-    <h2 style="font-size: 22px; margin-bottom: 20px;">⚙️ Configuración del Sistema</h2>
+    <h2 style="font-size: 22px; margin-bottom: 20px;">Lista de Recordatorios</h2>
 
     <a href="{{ route('configuracion.create') }}"
         style="display: inline-block; padding: 8px 12px; color: white; background: #222; border-radius: 5px; text-decoration: none; margin-bottom: 20px;">
-        ➕ Lista de Recordatorios
+        ➕ Agregar a la lista
     </a>
-
-    <a href="{{ asset('manuales/manual_administrador.pdf') }}"
-        download
-        style="display: inline-block; padding: 8px 12px; color: white; background: #0066cc; border-radius: 5px; text-decoration: none; margin-left: 10px;">
-        📘 Manual Administrador
-    </a>
-
-    <a href="{{ asset('manuales/manual_empleados.pdf') }}"
-        download
-        style="display: inline-block; padding: 8px 12px; color: white; background: #04ea04ff; border-radius: 5px; text-decoration: none; margin-left: 10px;">
-        📘 Manual Empleados
-    </a>
-
-    <a href="{{ asset('manuales/manual_clientes.pdf') }}"
-        download
-        style="display: inline-block; padding: 8px 12px; color: white; background: #d11622ff; border-radius: 5px; text-decoration: none; margin-left: 10px;">
-        📘 Manual Clientes
-    </a>
-
-
 
     <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background: white;">
         <thead>

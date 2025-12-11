@@ -105,8 +105,6 @@
     <div class="main-content">
         <div class="page-header">@yield('page-title')</div>
 
-<<<<<<< HEAD
-=======
         <!-- Controles: Solo se muestran en INDEX -->
         @if (request()->routeIs('empleados.index'))
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -138,8 +136,6 @@
             </button>
         </div>
         @endif
-
->>>>>>> origin/feature/vehiculos
         @yield('content')
     </div>
 
