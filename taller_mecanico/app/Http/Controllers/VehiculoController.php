@@ -33,8 +33,8 @@ class VehiculoController extends Controller
             $query->where('cliente_id', $cliente);
         }
 
-        if ($ano) {
-            $query->where('ano', $ano);
+        if ($request->filled('anio')) {
+            $query->where('ano', $request->anio);
         }
 
         $vehiculos = $query->orderBy('matricula')->paginate(10)

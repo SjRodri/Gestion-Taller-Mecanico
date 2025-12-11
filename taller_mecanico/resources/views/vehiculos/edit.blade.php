@@ -1,46 +1,80 @@
-<html lang="es">
+@extends('layouts.panel')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Cliente</title>
+@section('page-title', 'Editar Vehículo')
 
-    <link rel="stylesheet" href="{{ asset('css/datos.css') }}">
-</head>
+@section('content')
 
-<body>
+<div class="container">
 
-    <div class="container">
-        <h1>Editar Cliente</h1>
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
 
-        <form action="{{ url('clientes/'.$cliente->cliente_id) }}" method="POST">
-            @csrf
-            @method('PUT')
+            {{-- Mensajes de error --}}
+            @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                    <li>• {{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
 
-            <label for="dni">DNI</label>
-            <input type="text" name="dni" value="{{ $cliente->dni }}">
+            <form action="{{ route('vehiculos.update', $vehiculo->vehiculo_id) }}" method="POST">
+                @csrf
+                @method('PUT')
 
-            <label for="nombre">Nombre</label>
-            <input type="text" name="nombre" value="{{ $cliente->nombre }}" required>
+                <div class="mb-3">
+                    <label class="form-label">Matrícula</label>
+                    <input type="text" class="form-control" name="matricula"
+                        value="{{ old('matricula', $vehiculo->matricula) }}" required>
+                </div>
 
-            <label for="apellido">Apellido</label>
-            <input type="text" name="apellido" value="{{ $cliente->apellido }}" required>
+                <div class="mb-3">
+                    <label class="form-label">Modelo</label>
+                    <input type="text" class="form-control" name="modelo"
+                        value="{{ old('modelo', $vehiculo->modelo) }}" required>
+                </div>
 
-            <label for="telefono">Teléfono</label>
-            <input type="text" name="telefono" value="{{ $cliente->telefono }}">
+                <div class="mb-3">
+                    <label class="form-label">Año</label>
+                    <input type="number" class="form-control" name="ano"
+                        min="1900" max="2099"
+                        value="{{ old('ano', $vehiculo->ano) }}">
+                </div>
 
-            <label for="direccion">Dirección</label>
-            <input type="text" name="direccion" value="{{ $cliente->direccion }}">
+                <div class="mb-3">
+                    <label class="form-label">Color</label>
+                    <input type="text" class="form-control" name="color"
+                        value="{{ old('color', $vehiculo->color) }}">
+                </div>
 
-            <label for="correo">Correo</label>
-            <input type="email" name="correo" value="{{ $cliente->correo }}">
+                <div class="mb-3">
+                    <label class="form-label">VIN</label>
+                    <input type="text" class="form-control" name="vin"
+                        value="{{ old('vin', $vehiculo->vin) }}">
+                </div>
 
-            <button type="submit">Actualizar</button>
-        </form>
+                <div class="mb-3">
+                    <label class="form-label">Cliente</label>
+                    <select name="cliente_id" class="form-select" required>
+                        <option value="">Seleccione</option>
+                        @foreach ($clientes as $cli)
+                        <option value="{{ $cli->cliente_id }}">
+                            {{ $cli->nombre }} {{ $cli->apellido }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
 
-        <a href="{{ url('clientes') }}">⟵ Volver a la lista</a>
+                <button class="btn btn-primary">Actualizar Vehículo</button>
+                <a href="{{ route('vehiculos.index') }}" class="btn btn-secondary">Cancelar</a>
+
+            </form>
+
+        </div>
     </div>
 
-</body>
+</div>
 
-</html>
+@endsection

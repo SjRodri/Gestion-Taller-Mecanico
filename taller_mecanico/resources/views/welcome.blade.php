@@ -83,8 +83,20 @@
     </div>
 
     <div class="col-md-4 mb-3">
+        <a href="/repuestos?filter=bajo_stock" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center">Repuestos con bajo stock</div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <a href="/repuestos?filter=sin_stock" class="text-decoration-none text-dark">
+            <div class="card p-4 text-center">Repuestos sin stock</div>
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
         <a href="/vehiculos/create" class="text-decoration-none text-dark">
-            <div class="card p-4 text-center hover-card">Agregar Vehiculo</div>
+            <div class="card p-4 text-center hover-card">Registrar Vehiculo</div>
         </a>
     </div>
 
