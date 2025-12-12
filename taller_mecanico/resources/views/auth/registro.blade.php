@@ -18,7 +18,7 @@
 
         .card {
             background-color: #ffffff;
-            border: 2px solid #007bff;
+            border: 2px solid #9A0D1B;
             border-radius: 15px;
             padding: 20px;
             /* Reducido de 30px para compactar */
@@ -35,7 +35,7 @@
         }
 
         .btn-registro {
-            background-color: #007bff;
+            background-color: #9A0D1B;
             color: white;
             border-radius: 8px;
             font-weight: 600;
@@ -43,7 +43,7 @@
 
         /* Estilos para seccionar y compactar */
         .section-title {
-            color: #007bff;
+            color: #9A0D1B;
             font-size: 1rem;
             /* Reducido para compactar */
             font-weight: 600;
