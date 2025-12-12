@@ -58,30 +58,35 @@ Yeferson Alexander López Umanzor	0801200221402<br>
 Sayd Josue Rodriguez Merlo	0801200320730<br>
 Krizia Lidenis Cruz Rodriguez	0101200400076<br>
 Dixie Dariela Giron Flores	0318200401335<br>
-Cesar Eduardo Lagos Osorio	0801200112449<br>
 Brayan Adalid Cruz Osorio	1503199500704<br>
 
 🚀 Cómo Ejecutarlo
 
 1️⃣ Clonar el repositorio
 
-git clone https://github.com/<usuario>/Gestion-Taller-Mecanico.git
+git clone https://github.com/<usuario>/Gestion-Taller-Mecanico.git<br>
 cd Gestion-Taller-Mecanico
 
 
 2️⃣ Instalar dependencias
 
-composer install
+composer install<br>
 npm install
 
 
 3️⃣ Configurar el entorno
 
-cp .env.example .env
+cp .env.example .env<br>
 php artisan key:generate
 
 
-4️⃣ Configurar la base de datos en .env (nombre: gestion_de_talleres)
+4️⃣ Configurar la base de datos en .env (reemplazar las siguientes lineas):
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=gestion_de_talleres
+DB_USERNAME=root
+DB_PASSWORD=
 
 5️⃣ Ejecutar las migraciones
 
