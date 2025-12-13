@@ -1,72 +1,78 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.panel')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Vehiculo</title>
-    <link rel="stylesheet" href="{{ asset('css/datos.css') }}">
-</head>
+@section('page-title', 'Registrar Vehículo')
 
-<body>
-    <div class="container">
-        <h1>Agregar Vehiculo</h1>
+@section('content')
 
-        @if ($errors->any())
-        <div class="error-messages">
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>• {{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
+<div class="container">
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
 
-        @extends('layouts.app')
 
-        @section('content')
-        <div class="container">
-            <h1>Registrar Vehículo</h1>
+            {{-- Mostrar errores --}}
+            @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                    <li>• {{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
 
             <form action="{{ route('vehiculos.store') }}" method="POST">
                 @csrf
 
                 <div class="mb-3">
-                    <label for="matricula" class="form-label">Matrícula</label>
-                    <input type="text" name="matricula" id="matricula" class="form-control" required>
+                    <label class="form-label">Matrícula</label>
+                    <input type="text" class="form-control" name="matricula"
+                        value="{{ old('matricula') }}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="modelo" class="form-label">Modelo</label>
-                    <input type="text" name="modelo" id="modelo" class="form-control" required>
+                    <label class="form-label">Modelo</label>
+                    <input type="text" class="form-control" name="modelo"
+                        value="{{ old('modelo') }}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="ano" class="form-label">Año</label>
-                    <input type="number" name="ano" id="ano" class="form-control" min="1900" max="2099">
+                    <label class="form-label">Año</label>
+                    <input type="number" class="form-control" name="ano"
+                        value="{{ old('ano') }}" min="1900" max="2099">
                 </div>
 
                 <div class="mb-3">
-                    <label for="color" class="form-label">Color</label>
-                    <input type="text" name="color" id="color" class="form-control">
+                    <label class="form-label">Color</label>
+                    <input type="text" class="form-control" name="color"
+                        value="{{ old('color') }}">
                 </div>
 
                 <div class="mb-3">
-                    <label for="vin" class="form-label">VIN</label>
-                    <input type="text" name="vin" id="vin" class="form-control">
+                    <label class="form-label">VIN</label>
+                    <input type="text" class="form-control" name="vin"
+                        value="{{ old('vin') }}">
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label">Cliente</label>
+                    <select name="cliente_id" class="form-select" required>
+                        <option value="">Seleccione</option>
+                        @foreach ($clientes as $cli)
+                        <option value="{{ $cli->cliente_id }}">
+                            {{ $cli->nombre }} {{ $cli->apellido }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
 
+                <button class="btn btn-success">Registrar Vehículo</button>
+                <a href="{{ route('vehiculos.index') }}" class="btn btn-secondary">Cancelar</a>
 
+            </form>
 
         </div>
-
-        <button type="submit" class="btn btn-primary">Registrar vehículo</button>
-        </form>
     </div>
-    @endsection
 
-    </div>
-</body>
+</div>
 
-</html>
+@endsection

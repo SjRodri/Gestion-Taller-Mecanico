@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.panel')
 
 @section('content')
 <div class="container">
@@ -20,9 +20,9 @@
         <div class="mb-3">
             <label>Teléfono</label>
             <input type="text" name="telefono" class="form-control"
-                   value="{{ old('telefono') }}"
-                   required maxlength="8" pattern="\d{8}"
-                   title="El teléfono debe tener exactamente 8 números">
+                value="{{ old('telefono') }}"
+                required maxlength="8" pattern="\d{8}"
+                title="El teléfono debe tener exactamente 8 números">
         </div>
 
         <div class="mb-3">
@@ -67,7 +67,9 @@
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    var marker = L.marker([lat, lng], {draggable: true}).addTo(map);
+    var marker = L.marker([lat, lng], {
+        draggable: true
+    }).addTo(map);
 
     function updateInputs(e) {
         document.getElementById('lat').value = e.latlng.lat.toFixed(7);
@@ -75,7 +77,9 @@
     }
 
     marker.on('dragend', function(e) {
-        updateInputs(e.target.getLatLng ? {latlng: e.target.getLatLng()} : e);
+        updateInputs(e.target.getLatLng ? {
+            latlng: e.target.getLatLng()
+        } : e);
     });
 
     map.on('click', function(e) {

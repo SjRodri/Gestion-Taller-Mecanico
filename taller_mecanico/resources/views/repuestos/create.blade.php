@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.panel')
 
 @section('title', 'Nuevo Repuesto')
 @section('page-title', 'Nuevo Repuesto')
@@ -14,14 +14,14 @@
 
     <div class="card-body">
         @if ($errors->any())
-            <div class="alert alert-danger">
-                <strong>Por favor corrige los siguientes errores:</strong>
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
+        <div class="alert alert-danger">
+            <strong>Por favor corrige los siguientes errores:</strong>
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
         @endif
 
         <form action="{{ route('repuestos.store') }}" method="POST">
@@ -30,29 +30,29 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="descripcion_repuesto" class="form-label">Nombre del Repuesto</label>
-                    <input 
-                        type="text" 
-                        name="descripcion_repuesto" 
-                        id="descripcion_repuesto" 
+                    <input
+                        type="text"
+                        name="descripcion_repuesto"
+                        id="descripcion_repuesto"
                         class="form-control @error('descripcion_repuesto') is-invalid @enderror"
-                        value="{{ old('descripcion_repuesto') }}" 
+                        value="{{ old('descripcion_repuesto') }}"
                         required>
                     @error('descripcion_repuesto')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label for="categoria" class="form-label">Categoría</label>
-                    <input 
-                        type="text" 
-                        name="categoria" 
-                        id="categoria" 
+                    <input
+                        type="text"
+                        name="categoria"
+                        id="categoria"
                         class="form-control @error('categoria') is-invalid @enderror"
-                        value="{{ old('categoria') }}" 
+                        value="{{ old('categoria') }}"
                         required>
                     @error('categoria')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
             </div>
@@ -60,43 +60,43 @@
             <div class="row">
                 <div class="col-md-4 mb-3">
                     <label for="precio" class="form-label">Precio</label>
-                    <input 
-                        type="number" 
-                        name="precio" 
-                        id="precio" 
+                    <input
+                        type="number"
+                        name="precio"
+                        id="precio"
                         class="form-control @error('precio') is-invalid @enderror"
-                        value="{{ old('precio') }}" 
-                        step="0.01" 
+                        value="{{ old('precio') }}"
+                        step="0.01"
                         required>
                     @error('precio')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="col-md-4 mb-3">
                     <label for="cantidad" class="form-label">Cantidad</label>
-                    <input 
-                        type="number" 
-                        name="cantidad" 
-                        id="cantidad" 
+                    <input
+                        type="number"
+                        name="cantidad"
+                        id="cantidad"
                         class="form-control @error('cantidad') is-invalid @enderror"
-                        value="{{ old('cantidad') }}" 
+                        value="{{ old('cantidad') }}"
                         required>
                     @error('cantidad')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="col-md-4 mb-3">
                     <label for="reorder_threshold" class="form-label">Reordenar Producto</label>
-                    <input 
-                        type="number" 
-                        name="reorder_threshold" 
-                        id="reorder_threshold" 
+                    <input
+                        type="number"
+                        name="reorder_threshold"
+                        id="reorder_threshold"
                         class="form-control @error('reorder_threshold') is-invalid @enderror"
                         value="{{ old('reorder_threshold') }}">
                     @error('reorder_threshold')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
             </div>
